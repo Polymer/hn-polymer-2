@@ -1,0 +1,174 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../dev/components/polymer/lib/utils/boot.html">
+<link rel="import" href="../../../../dev/components/polymer/lib/utils/mixin.html">
+<link rel="import" href="../../../../dev/components/polymer/lib/mixins/property-accessors.html">
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer.SimpleElementMixin = Polymer.dedupingMixin(function(base) {
+
+    const polymerSimpleElementBase = Polymer.PropertyAccessors(base);
+
+    /**
+     * @polymerMixinClass
+     * @unrestricted
+     */
+    class PolymerSimpleElement extends polymerSimpleElementBase {
+
+      static get observedAttributes() {
+        return [];
+      }
+
+      static get template() {}
+
+      static finalize(name, useShadowDOM) {
+        const proto = this.prototype;
+        if (proto.hasOwnProperty('__finalized')) {
+          return;
+        }
+        proto.__finalized = true;
+        this.createPropertiesForAttributes();
+        const template = this.template;
+        if (template) {
+          proto._template = document.createElement('template');
+          proto._template.innerHTML = template;
+          if (!useShadowDOM) {
+            const content = proto._template.content;
+            const style = content.querySelector('style');
+            if (style) {
+              style.setAttribute('element', name);
+              style.parentNode.removeChild(style);
+              proto._style = style;
+            }
+          }
+        }
+      }
+
+      static ensureStyles(root, name) {
+        let container = root;
+        container.__simpleElementStyles = container.__simpleElementStyles || {};
+        if (!container.__simpleElementStyles[name]) {
+          container.__simpleElementStyles[name] = true;
+          const style = this.prototype._style;
+          if (style) {
+            if (window.ShadyDOM) {
+              container = document;
+            }
+            if (container instanceof Document) {
+              container = container.head;
+            }
+            const lastStyle = container.querySelector('style:first-of-type');
+            const refNode = lastStyle || container.firstChild;
+            container.insertBefore(style.cloneNode(true), refNode);
+          }
+        }
+      }
+
+      /**
+       * Overrides the default `Polymer.PropertyAccessors` to ensure class
+       * metaprogramming related to property accessors and effects has
+       * completed.
+       *
+       * @override
+       */
+      _initializeProperties() {
+        super._initializeProperties();
+        if (Polymer.telemetry) {
+          Polymer.telemetry.instanceCount++;
+        }
+        this.__connected = false;
+        this._useShadowDOM = false;
+      }
+
+      _invalidateProperties() {
+        if (this.__connected) {
+          super._invalidateProperties();
+        }
+      }
+
+      /**
+       * Provides a default implementation of the standard Custom Elements
+       * `connectedCallback`.
+       *
+       * The default implementation enables the property effects system and
+       * flushes any pending properties, and updates shimmed CSS properties
+       * when using the ShadyCSS scoping/custom properties polyfill.
+       *
+       * @override
+       */
+      connectedCallback() {
+        if (!this.__connected) {
+          this.__connected = true;
+          this.constructor.finalize(this.localName, this._useShadowDOM);
+          if (this._template) {
+            this._root = this._attachDom(this._stampTemplate(this._template));
+          }
+        }
+        this._flushProperties();
+      }
+
+      /**
+       * Provides a default implementation of the standard Custom Elements
+       * `disconnectedCallback`.
+       *
+       * @override
+       */
+      disconnectedCallback() {}
+
+      /**
+       * Attaches an element's stamped dom to itself. By default,
+       * this method creates a `shadowRoot` and adds the dom to it.
+       * However, this method may be overridden to allow an element
+       * to put its dom in another location.
+       *
+       * @method _attachDom
+       * @throws {Error}
+       * @suppress {missingReturn}
+       * @param {NodeList} dom to attach to the element.
+       * @return {Node} node to which the dom has been attached.
+       */
+      _attachDom(dom) {
+        if (this._useShadowDOM) {
+          if (!this.shadowRoot) {
+            this.attachShadow({mode: 'open'});
+          }
+          this.shadowRoot.appendChild(dom);
+          return this.shadowRoot;
+        } else {
+          this.appendChild(dom);
+          this.constructor.ensureStyles(this.getRootNode(), this.localName);
+          return this;
+        }
+      }
+
+      _stampTemplate(template) {
+        let dom = document.importNode(template.content, true);
+        let n$ = dom.querySelectorAll('[id]');
+        this.$ = {};
+        for (let i=0; i < n$.length; i++) {
+          let n = n$[i];
+          this.$[n.getAttribute('id')] = n;
+        }
+        return dom;
+      }
+
+    }
+
+    return PolymerSimpleElement;
+  });
+
+  Polymer.SimpleElement = Polymer.SimpleElementMixin(HTMLElement);
+
+})();
+</script>
