@@ -60,32 +60,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </li>
       </template>
     </ul>
+    <a href="[[route.prefix]]/[[_computeNextPage(routeData.page)]]">More...</a>
   </template>
   <script>
   (function() {
     class HnList extends Polymer.Element {
       static get is() { return 'hn-list'; }
 
-      static get properties() {
-        return {
-          listType: {
-            value: 'news',
-            observer: '_listTypeChanged'
-          }
-        }
+      static get observers() {
+        return ['_listTypeChanged(listType, routeData.page)']
       }
 
-      _listTypeChanged(listType) {
-        fetch(`http://node-hnapi.herokuapp.com/${listType}`).then(resp => {
+      _listTypeChanged(listType, page) {
+        // Reset page if list type changes.
+        if (this._oldListType && (listType != this._oldListType)) {
+          if (page) {
+            this.set('routeData.page', null);
+            return;
+          }
+        }
+        this._oldListType = listType;
+        let url = `http://node-hnapi.herokuapp.com/${listType}`;
+        if (page) {
+          url += `?page=${page}`;
+        }
+        console.log('fetching', url);
+        fetch(url).then(resp => {
           resp.json().then(json => {
-            console.time('render');
             this.articles = json;
-            Polymer.flush();
-            console.timeEnd('render');
-            document.body.offsetWidth;
-            console.timeEnd('total');
           });
         });
+      }
+
+      _computeNextPage(page) {
+        return parseInt(page || 1) + 1;
       }
     }
 

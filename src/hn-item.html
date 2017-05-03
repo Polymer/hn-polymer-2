@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <div inner-h-t-m-l="[[comment.content]]"></div>
     <div class="comments">
-      <template is="dom-repeat" items="[[comment.comments]]">
+      <template is="dom-repeat" items="[[comment.comments]]" initial-count="3">
         <hn-comment comment=[[item]]></hn-comment>
       </template>
     </div>
@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         pattern="/:itemId"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
-    <template is="dom-repeat" items="[[item.comments]]">
+    <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
       <hn-comment comment=[[item]]></hn-comment>
     </template>
   </template>
@@ -65,12 +65,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get observers() { return ['_itemIdChanged(routeData.itemId)']; }
 
       _itemIdChanged(itemId) {
-        fetch(`http://node-hnapi.herokuapp.com/item/${itemId}`).then(resp => {
+        let url = `http://node-hnapi.herokuapp.com/item/${itemId}`;
+        console.log('fetching', url);
+        fetch(url).then(resp => {
           resp.json().then(json => {
-            console.time('render');
             this.item = json;
-            Polymer.flush();
-            console.timeEnd('render');
           })
         })
       }
