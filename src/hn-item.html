@@ -22,14 +22,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding-left: 30px;
       }
 
-      .header {}
+      .toggle {
+        cursor: pointer;
+      }
+
+      .header {
+        display: flex;
+      }
+      .header > * {
+        margin-right: .5em;
+      }
+      .comment > p {
+        white-space: pre-wrap;
+      }
     </style>
     <div class="header">
-      <a href$="/user/[[comment.user]]">[[comment.user]]</a> [[comment.time_ago]]
+      <span class="toggle" on-click="toggleCollapse">[[[_collapsedString]]]</span><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
     </div>
-    <div inner-h-t-m-l="[[comment.content]]"></div>
+    <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <hr>
-    <div class="comments">
+    <div class="comments" hidden$="[[collapsed]]">
       <template is="dom-repeat" items="[[comment.comments]]" initial-count="3">
         <hn-comment comment=[[item]]></hn-comment>
       </template>
@@ -39,6 +51,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
     class HnComment extends Polymer.Element {
       static get is() { return 'hn-comment'; }
+      static get properties() {
+        return {
+          collapsed: {
+            type: Boolean,
+            value: false,
+          },
+          _collapsedString: {
+            type: String,
+            value: '–',
+          },
+          _commentThreadSize: {
+            type: Number,
+            value: 1,
+          },
+        };
+      }
+      _calculateCommentThreadSize(comment) {
+        let threadSize = 0;
+        let flat = (comment) => {
+          threadSize++;
+          comment.comments.forEach(flat);
+        };
+        flat(comment);
+        return threadSize;
+      }
+      toggleCollapse() {
+        this.collapsed = !this.collapsed;
+        this._collapsedString = this.collapsed ? `+ ${this._calculateCommentThreadSize(this.comment)}` : '–';
+      }
     }
     customElements.define(HnComment.is, HnComment);
   })();
