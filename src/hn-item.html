@@ -21,8 +21,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .comments {
         padding-left: 30px;
       }
+
+      .header {}
     </style>
+    <div class="header">
+      <a href$="/user/[[comment.user]]">[[comment.user]]</a> [[comment.time_ago]]
+    </div>
     <div inner-h-t-m-l="[[comment.content]]"></div>
+    <hr>
     <div class="comments">
       <template is="dom-repeat" items="[[comment.comments]]" initial-count="3">
         <hn-comment comment=[[item]]></hn-comment>
@@ -46,12 +52,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
-    <h1>[[item.title]]</h1>
+    <template is="dom-if" if="[[!item.content]]">
+      <h1><a href$="[[item.url]]">[[item.title]]</a></h1> <span>([[item.domain]])</span>
+    </template>
+    <template is="dom-if" if="[[item.content]]">
+      <h1>[[item.title]]</h1>
+      <div inner-h-t-m-l="[[item.content]]"></div>
+    </template>
+    <div>[[item.points]] points by <a href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</div>
+    <br>
     <app-route
         route="{{route}}"
         pattern="/:itemId"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
+    <div>[[item.comments_count]] comments</div>
+    <hr>
     <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
       <hn-comment comment=[[item]]></hn-comment>
     </template>
@@ -67,12 +83,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _itemIdChanged(itemId) {
         this.item = {};
         let url = `http://node-hnapi.herokuapp.com/item/${itemId}`;
-        console.log('fetching', url);
-        fetch(url).then(resp => {
-          resp.json().then(json => {
+        fetch(url).then((resp) => {
+          resp.json().then((json) => {
             this.item = json;
-          })
-        })
+          });
+        });
       }
     }
     customElements.define(HnItem.is, HnItem);
