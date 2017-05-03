@@ -95,11 +95,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         let listType = this.listType;
         switch(page) {
-          case 'top':
           case 'news':
           case 'ask':
           case 'jobs':
             listType = page;
+            page = 'list';
+            break;
+          case 'top':
+            listType = 'best';
             page = 'list';
             break;
         }
