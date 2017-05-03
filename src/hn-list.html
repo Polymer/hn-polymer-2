@@ -59,9 +59,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
     class HnList extends Polymer.Element {
       static get is() { return 'hn-list'; }
-      constructor() {
-        super();
-        fetch('http://node-hnapi.herokuapp.com/news').then(resp => {
+
+      static get properties() {
+        return {
+          listType: {
+            value: 'news',
+            observer: '_listTypeChanged'
+          }
+        }
+      }
+
+      _listTypeChanged(listType) {
+        fetch(`http://node-hnapi.herokuapp.com/${listType}`).then(resp => {
           resp.json().then(json => {
             console.time('render');
             this.articles = json;

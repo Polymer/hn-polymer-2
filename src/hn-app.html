@@ -57,9 +57,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         attr-for-selected="name"
         fallback-selection="404"
         role="main">
-      <hn-list name="list"></hn-list>
-      <hn-item name="item"></hn-item>
-      <hn-user name="user"></hn-user>
+      <hn-list name="list" list-type="[[type]]"></hn-list>
+      <hn-item name="item" item-id="[[id]]"></hn-item>
+      <hn-user name="user" user-name="[[user]]"></hn-user>
       <hn-404 name="404"></hn-404>
     </iron-pages>
   </template>
@@ -76,13 +76,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: String,
             reflectToAttribute: true,
             observer: '_pageChanged',
-          },
+          }
         };
       }
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)',
+          '_routePageChanged(routeData.page)'
         ];
       }
 
@@ -91,7 +91,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return;
         }
         this.page = page || 'list';
-
       }
 
       _pageChanged(page) {
@@ -107,6 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _showPage404() {
         this.page = '404';
       }
+
     }
 
     window.customElements.define(HnApp.is, HnApp);
