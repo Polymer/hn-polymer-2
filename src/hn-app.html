@@ -47,19 +47,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
+
     <header>
-      <a href="/list">Top</a>
-      <a href="/item">New</a>
-      <a href="/user">Show</a>
+      <a href="/top">Top</a>
+      <a href="/news">News</a>
+      <a href="/ask">Ask</a>
+      <a href="/jobs">Jobs</a>
     </header>
+
    <iron-pages
         selected="[[page]]"
         attr-for-selected="name"
         fallback-selection="404"
         role="main">
-      <hn-list name="list" list-type="[[type]]"></hn-list>
-      <hn-item name="item" item-id="[[id]]"></hn-item>
-      <hn-user name="user" user-name="[[user]]"></hn-user>
+      <hn-list name="list" list-type="[[listType]]"></hn-list>
+      <hn-item name="item" route="[[subroute]]"></hn-item>
+      <hn-user name="user" route="[[subroute]]"></hn-user>
       <hn-404 name="404"></hn-404>
     </iron-pages>
   </template>
@@ -90,21 +93,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (page === undefined) {
           return;
         }
-        this.page = page || 'list';
+        let listType = this.listType;
+        switch(page) {
+          case 'top':
+          case 'news':
+          case 'ask':
+          case 'jobs':
+            listType = page;
+            page = 'list';
+            break;
+        }
+        this.setProperties({
+          page: page || 'list',
+          listType
+        });
       }
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('hn-' + page + '.html');
-        Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
-      }
-
-      _showPage404() {
-        this.page = '404';
+        Polymer.importHref(resolvedPageUrl, null, ()=>this.page='404', true);
       }
 
     }

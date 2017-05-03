@@ -18,7 +18,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <h1>User</h1>
+    <app-route
+        route="{{route}}"
+        pattern="/:userName"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <h1>User: [[routeData.userName]]</h1>
   </template>
 
   <script>

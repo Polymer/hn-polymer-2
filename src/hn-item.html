@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 
 <dom-module id="hn-comment">
   <template strip-whitespace>
@@ -46,6 +47,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <h1>[[item.title]]</h1>
+    <app-route
+        route="{{route}}"
+        pattern="/:itemId"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
     <template is="dom-repeat" items="[[item.comments]]">
       <hn-comment comment=[[item]]></hn-comment>
     </template>
@@ -56,14 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class HnItem extends Polymer.Element {
       static get is() { return 'hn-item'; }
 
-      static get properties() {
-        return {
-          itemId: {
-            value: '14223020',
-            observer: '_itemIdChanged'
-          }
-        }
-      }
+      static get observers() { return ['_itemIdChanged(routeData.itemId)']; }
 
       _itemIdChanged(itemId) {
         fetch(`http://node-hnapi.herokuapp.com/item/${itemId}`).then(resp => {
