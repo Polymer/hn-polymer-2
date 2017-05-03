@@ -47,6 +47,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-bottom: 1px solid gray;
       }
     </style>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
     <ul>
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
         <li>
