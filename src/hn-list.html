@@ -56,7 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
         <li>
           <div class="item-title"><a href="[[item.url]]">[[item.title]]</a> ([[item.domain]])</div>
-          <div class="item-info">[[item.points]] points, by <a href="user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] | hide | <a href="item/[[item.id]]">[[item.comments_count]] comments</a></div>
+          <div class="item-info">[[item.points]] points, by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] | hide | <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
         </li>
       </template>
     </ul>
