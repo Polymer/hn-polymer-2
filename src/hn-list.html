@@ -1,0 +1,80 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="hn-list">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      a {
+        pointer: cursor;
+        color: black;
+      }
+
+      .item-title > a {
+        text-decoration: none;
+      }
+
+      ul > li {
+        margin: 4px;
+      }
+
+      .item-title {
+        padding: 8px;
+      }
+
+      .item-info {
+        font-size: 12px;
+        padding: 0 8px 8px 8px;
+        border-bottom: 1px solid gray;
+      }
+    </style>
+    <ul>
+      <template is="dom-repeat" items="[[articles]]" initial-count="10">
+        <li>
+          <div class="item-title"><a href="[[item.url]]">[[item.title]]</a> ([[item.domain]])</div>
+          <div class="item-info">[[item.points]] points, by <a href="user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] | hide | <a href="item/[[item.id]]">[[item.comments_count]] comments</a></div>
+        </li>
+      </template>
+    </ul>
+  </template>
+  <script>
+  (function() {
+    class HnList extends Polymer.Element {
+      static get is() { return 'hn-list'; }
+      constructor() {
+        super();
+        fetch('http://node-hnapi.herokuapp.com/news').then(resp => {
+          resp.json().then(json => {
+            console.time('render');
+            this.articles = json;
+            Polymer.flush();
+            console.timeEnd('render');
+            document.body.offsetWidth;
+            console.timeEnd('total');
+          });
+        });
+      }
+    }
+
+    window.customElements.define(HnList.is, HnList);
+  })();
+  </script>
+</dom-module>

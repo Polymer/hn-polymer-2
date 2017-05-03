@@ -1,0 +1,73 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="hn-comment">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .comments {
+        padding-left: 30px;
+      }
+    </style>
+    <div inner-h-t-m-l="[[comment.content]]"></div>
+    <div class="comments">
+      <template is="dom-repeat" items="[[comment.comments]]">
+        <hn-comment comment=[[item]]></hn-comment>
+      </template>
+    </div>
+  </template>
+  <script>
+  (function() {
+    class HnComment extends Polymer.Element {
+      static get is() { return 'hn-comment'; }
+    }
+    customElements.define(HnComment.is, HnComment);
+  })();
+  </script>
+</dom-module>
+
+<dom-module id="hn-item">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h1>[[item.title]]</h1>
+    <template is="dom-repeat" items="[[item.comments]]">
+      <hn-comment comment=[[item]]></hn-comment>
+    </template>
+  </template>
+
+  <script>
+  (function() {
+    class HnItem extends Polymer.Element {
+      static get is() { return 'hn-item'; }
+      constructor() {
+        super();
+        fetch('http://node-hnapi.herokuapp.com/item/14223020').then(resp => {
+          resp.json().then(json => {
+            console.time('render');
+            this.item = json;
+            Polymer.flush();
+            console.timeEnd('render');
+          })
+        })
+      }
+    }
+    customElements.define(HnItem.is, HnItem);
+  })();
+  </script>
+</dom-module>

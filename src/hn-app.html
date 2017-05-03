@@ -19,6 +19,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+
+      :host {
+        display: block;
+      }
+
+      header {
+        background-color: #4285f4;
+        height: 55px;
+        padding: 15px;
+        box-sizing: border-box;
+      }
+
+      header > a {
+        color: white;
+        line-height: 24px;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: 300;
+        letter-spacing: .075em;
+        margin-right: 1.8em;
+      }
     </style>
     <app-location route="{{route}}"></app-location>
     <app-route
@@ -27,18 +48,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
     <header>
-      <a href="/articles">Top</a>
-      <a href="/comments">New</a>
-      <a href="/profile">Show</a>
+      <a href="/list">Top</a>
+      <a href="/item">New</a>
+      <a href="/user">Show</a>
     </header>
    <iron-pages
         selected="[[page]]"
         attr-for-selected="name"
         fallback-selection="404"
         role="main">
-      <hn-articles name="articles"></hn-articles>
-      <hn-comments name="comments"></hn-comments>
-      <hn-profile name="profile"></hn-profile>
+      <hn-list name="list"></hn-list>
+      <hn-item name="item"></hn-item>
+      <hn-user name="user"></hn-user>
       <hn-404 name="404"></hn-404>
     </iron-pages>
   </template>
@@ -66,15 +87,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _routePageChanged(page) {
-        // Polymer 2.0 will call with `undefined` on initialization.
-        // Ignore until we are properly called with a string.
         if (page === undefined) {
           return;
         }
-
-        // If no page was found in the route data, page will be an empty string.
-        // Deault to 'view1' in that case.
-        this.page = page || 'articles';
+        this.page = page || 'list';
 
       }
 

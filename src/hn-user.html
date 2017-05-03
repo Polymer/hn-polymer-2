@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 
-<dom-module id="hn-comments">
+<dom-module id="hn-user">
   <template>
     <style>
       :host {
@@ -20,19 +20,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>Comments</h1>
-    </div>
+    <h1>User</h1>
   </template>
 
   <script>
   (function() {
-    class HnComments extends Polymer.Element {
-      static get is() { return 'hn-comments'; }
+    class HnUser extends Polymer.Element {
+      static get is() { return 'hn-user'; }
     }
 
-    window.customElements.define(HnComments.is, HnComments);
+    window.customElements.define(HnUser.is, HnUser);
   })();
   </script>
 </dom-module>
