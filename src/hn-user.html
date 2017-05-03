@@ -9,12 +9,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 
 <dom-module id="hn-user">
   <template strip-whitespace>
     <style>
       :host {
         display: block;
+      }
+      #container {
+        display: flex;
+      }
+      #right {
+        padding-left: 1em;
+        flex: 1;
       }
     </style>
 
@@ -24,13 +32,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <h1>User: [[routeData.userName]]</h1>
+    <div id="container">
+      <div id="left">
+        <div>user:</div>
+        <div>created:</div>
+        <div>karma:</div>
+        <div hidden$="[[!user.about]]">about:</div>
+      </div>
+      <div id="right">
+        <div>[[user.id]]</div>
+        <div>[[user.created]]</div>
+        <div>[[user.karma]]</div>
+        <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
+      </div>
+    </div>
+    <br>
+    <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
   </template>
 
   <script>
   (function() {
     class HnUser extends Polymer.Element {
       static get is() { return 'hn-user'; }
+      static get observers() {
+        return ['_userIdChanged(routeData.userName)'];
+      }
+
+      _hnLink(type, userName) {
+        return `https://news.ycombinator.com/${type}?id=${userName}`;
+      }
+
+      _userIdChanged(userName) {
+        this.user = {};
+        fetch(`http://node-hnapi.herokuapp.com/user/${userName}`).then((resp) => {
+          resp.json().then((json) => {
+            if (json.about) {
+              if (json.about.startsWith('<p>')) {
+                json.about = json.about.slice(3);
+              }
+            }
+            this.user = json;
+          });
+        });
+      }
     }
 
     window.customElements.define(HnUser.is, HnUser);

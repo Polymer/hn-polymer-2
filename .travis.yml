@@ -8,12 +8,10 @@ addons:
       - google-chrome
     packages:
       - google-chrome-stable
-node_js:
-  - '6'
-  - '5'
-  - '4'
+node_js: stable
 before_script:
   - npm install -g bower polymer-cli
   - bower install
+cache: yarn
 script:
   - xvfb-run npm test
