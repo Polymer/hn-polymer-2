@@ -1,0 +1,108 @@
+<link rel="import" href="simple-element-mixin.html">
+<script>
+(function() {
+
+  class HnApp extends Polymer.SimpleElementMixin(HTMLElement) {
+    static get template() {
+      return `<style>
+      :host {
+        display: block;
+      }
+
+      header {
+        background-color: #4285f4;
+        height: 55px;
+        padding: 15px;
+        box-sizing: border-box;
+      }
+
+      header > a {
+        color: white;
+        line-height: 24px;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: 300;
+        letter-spacing: .075em;
+        margin-right: 1.8em;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      a {
+        pointer: cursor;
+        color: black;
+      }
+
+      .item-title > a {
+        text-decoration: none;
+      }
+
+      ul > li {
+        margin: 4px;
+      }
+
+      .item-title {
+        padding: 8px;
+      }
+
+      .item-info {
+        font-size: 12px;
+        padding: 0 8px 8px 8px;
+        border-bottom: 1px solid gray;
+      }
+    </style>
+    <header>
+        <!-- <a href="/" class=""><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAAGXRFW…Upku6/jjAWZqDI+uGkGz2dPpuydyHFtZGQk9T/BaHfAgwAytLfbeiDo+IAAAAASUVORK5CYII=" alt="logo"></a> -->
+        <a href="/top">Top</a>
+        <a href="/new">New</a>
+        <a href="/show">Show</a>
+        <a href="/ask">Ask</a>
+        <a href="/job">Jobs</a>
+    </header>
+    <ul id="list"></ul>`;
+    }
+
+    static get observedAttributes() {
+      return ['articles'];
+    }
+
+    constructor() {
+      super();
+      fetch('http://node-hnapi.herokuapp.com/news').then(resp => {
+        resp.json().then(json => {
+          console.time('render');
+          this.articles = json;
+        })
+      })
+    }
+
+    _propertiesChanged(props) {
+      this._renderArticles(props.articles);
+    }
+
+    _renderArticles(articles) {
+      let frag = document.createDocumentFragment();
+      articles.forEach(a => {
+        frag.appendChild(this._renderArticleItem(a));
+      });
+      this.$.list.appendChild(frag);
+      console.timeEnd('render');
+      document.body.offsetWidth;
+      console.timeEnd('total');
+    }
+
+    _renderArticleItem(article) {
+      let t = document.createElement('template');
+      t.innerHTML = `<div class="item-title"><a href="${article.url}">${article.title}</a> (${article.domain})</div><div class="item-info">${article.points} points, by <a href="user/${article.user}">${article.user}</a> ${article.time_ago} | hide | <a href="comments/">${article.comments_count} comments</a></div>`;
+      return t.content;
+    }
+  }
+
+  customElements.define('hn-app', HnApp);
+
+})();
+</script>

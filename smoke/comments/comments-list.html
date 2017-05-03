@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+
+<dom-module id="comment-item">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+      .comments {
+        padding-left: 30px;
+      }
+    </style>
+    <div inner-h-t-m-l="[[comment.content]]"></div>
+    <div class="comments">
+      <template is="dom-repeat" items="[[comment.comments]]">
+        <comment-item comment=[[item]]></comment-item>
+      </template>
+    </div>
+  </template>
+  <script>
+  (function() {
+    class CommentItem extends Polymer.Element {
+      static get is() { return 'comment-item'; }
+    }
+    customElements.define(CommentItem.is, CommentItem);
+  })();
+  </script>
+</dom-module>
+
+<dom-module id="comment-list">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <template is="dom-repeat" items="[[comments]]">
+      <comment-item comment=[[item]]></comment-item>
+    </template>
+  </template>
+
+  <script>
+  (function() {
+    class CommentList extends Polymer.Element {
+      static get is() { return 'comment-list'; }
+      constructor() {
+        super();
+        fetch('http://node-hnapi.herokuapp.com/item/14223020').then(resp => {
+          resp.json().then(json => {
+            console.time('render');
+            this.comments = json.comments;
+            Polymer.flush();
+            console.timeEnd('render');
+          })
+        })
+      }
+    }
+    customElements.define(CommentList.is, CommentList);
+  })();
+  </script>
+
+</dom-module>
