@@ -49,11 +49,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tail="{{subroute}}"></app-route>
 
     <header>
-      <a href="/top">Top</a>
-      <a href="/new">New</a>
-      <a href="/ask">Ask</a>
-      <a href="/show">Show</a>
-      <a href="/jobs">Jobs</a>
+      <a href="/top/1">Top</a>
+      <a href="/new/1">New</a>
+      <a href="/ask/1">Ask</a>
+      <a href="/show/1">Show</a>
+      <a href="/jobs/1">Jobs</a>
     </header>
 
    <iron-pages
@@ -90,8 +90,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _routePageChanged(page) {
+        if (!page) {
+          this.set('route.path', '/top/1');
+          return;
+        }
         let listType = this.listType;
         switch(page) {
+          case 'top':
+            listType = 'news';
+            page = 'list';
+            break;
           case 'new':
             listType = 'newest';
             page = 'list';
@@ -100,11 +108,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'show':
           case 'jobs':
             listType = page;
-            page = 'list';
-            break;
-          case 'top':
-          default:
-            listType = 'news';
             page = 'list';
             break;
         }

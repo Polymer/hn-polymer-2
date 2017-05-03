@@ -72,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _listTypeChanged(listType, page) {
+        this.articles = [];
         // Reset page if list type changes.
         if (this._oldListType && (listType != this._oldListType)) {
           if (page) {

@@ -65,6 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get observers() { return ['_itemIdChanged(routeData.itemId)']; }
 
       _itemIdChanged(itemId) {
+        this.item = {};
         let url = `http://node-hnapi.herokuapp.com/item/${itemId}`;
         console.log('fetching', url);
         fetch(url).then(resp => {
