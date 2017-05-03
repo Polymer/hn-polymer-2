@@ -37,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div class="header">
-      <span class="toggle" on-click="toggleCollapse">[[[_collapsedString]]]</span><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
+      <span class="toggle" on-click="toggleCollapse">[[[_collapseString]]]</span><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
     </div>
     <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <hr>
@@ -57,13 +57,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false,
           },
-          _collapsedString: {
+          _collapseString: {
             type: String,
             value: '–',
           },
           _commentThreadSize: {
             type: Number,
-            value: 1,
+            value: 0,
           },
         };
       }
@@ -78,7 +78,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       toggleCollapse() {
         this.collapsed = !this.collapsed;
-        this._collapsedString = this.collapsed ? `+ ${this._calculateCommentThreadSize(this.comment)}` : '–';
+        if (!this._commentThreadSize) {
+          this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
+        }
+        this._collapseString = this.collapsed ? `+ ${this._commentThreadSize}` : '–';
       }
     }
     customElements.define(HnComment.is, HnComment);
