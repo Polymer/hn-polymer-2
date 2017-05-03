@@ -1,5 +1,5 @@
 {
-  "name": "polymer-starter-kit",
+  "name": "hn-polymer",
   "authors": [
     "The Polymer Authors"
   ],
@@ -10,11 +10,8 @@
     "polymer": "Polymer/polymer#^2.0.0-rc.1",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.4"
   },
-  "resolutions": {
-    "polymer": "^2.0.0-rc.1"
-  },
   "devDependencies": {
-    "web-component-tester": "6.0.0-prerelease.5"
+    "web-component-tester": "^6.0.0-prerelease.5"
   },
   "private": true
 }
