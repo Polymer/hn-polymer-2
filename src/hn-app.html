@@ -81,11 +81,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ];
       }
 
-      connectedCallback() {
-        super.connectedCallback();
-        this.isAttached = true;
-      }
-
       _routeChanged(path) {
         let [page, detail] = path;
         if (!(page && detail)) {
@@ -117,6 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             break;
         }
         this.setProperties(props);
+        document.body.scrollTop = 0;
       }
 
       _viewChanged(name) {

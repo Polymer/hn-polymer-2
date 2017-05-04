@@ -66,6 +66,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .spacer {
         padding: 0 .5em;
       }
+
+      .more {
+        display: inline-block;
+        padding-top: 16px;
+        text-decoration: none;
+      }
     </style>
     <ul>
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
@@ -75,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </li>
       </template>
     </ul>
-    <a href="/[[listName]]/[[_computeNextPage(listPage)]]">More...</a>
+    <a class="more" href="/[[listName]]/[[_computeNextPage(listPage)]]">More...</a>
   </template>
   <script>
   (function() {
