@@ -54,13 +54,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </header>
 
    <iron-pages
-        selected="[[page]]"
+        selected="[[view]]"
         attr-for-selected="name"
         fallback-selection="404"
         role="main">
-      <hn-list name="list" list-type="[[listType]]" route="[[subroute]]"></hn-list>
+      <hn-list name="list" list-type="[[listType]]" route="[[listSubroute]]"></hn-list>
+      <hn-item name="item" route="[[itemSubroute]]"></hn-item>
+      <hn-user name="user" route="[[userSubroute]]"></hn-user>
+      <!-- <hn-list name="list" list-type="[[listType]]" route="[[subroute]]"></hn-list>
       <hn-item name="item" route="[[subroute]]"></hn-item>
-      <hn-user name="user" route="[[subroute]]"></hn-user>
+      <hn-user name="user" route="[[subroute]]"></hn-user> -->
       <hn-404 name="404"></hn-404>
     </iron-pages>
   </template>
@@ -73,51 +76,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          page: {
+          view: {
             type: String,
-            observer: '_pageChanged',
+            observer: '_viewChanged',
           }
         };
       }
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)'
+          '_routeChanged(routeData.page, subroute, isAttached)'
         ];
       }
 
-      _routePageChanged(page) {
+      connectedCallback() {
+        super.connectedCallback();
+        this.isAttached = true;
+      }
+
+      _routeChanged(page, subroute, isAttached) {
+        if (!isAttached) {
+          return;
+        }
         if (!page) {
-          this.set('route.path', '/top/1');
+          this.set('route.path', 'top/1');
           return;
         }
         let listType = this.listType;
+        let view = page;
         switch(page) {
           case 'top':
             listType = 'news';
-            page = 'list';
+            view = 'list';
             break;
           case 'new':
             listType = 'newest';
-            page = 'list';
+            view = 'list';
             break;
           case 'ask':
           case 'show':
           case 'jobs':
             listType = page;
-            page = 'list';
+            view = 'list';
             break;
         }
-        this.setProperties({
-          page,
+        let props = {
+          view,
           listType
-        });
+        };
+        switch (view) {
+          case 'list':
+            props.listSubroute = subroute;
+            break;
+          case 'item':
+            props.itemSubroute = subroute;
+            break;
+          case 'user':
+            props.userSubroute = subroute;
+            break;
+        }
+
+        this.setProperties(props);
       }
 
-      _pageChanged(page) {
+      _viewChanged(name) {
         // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('hn-' + page + '.html');
-        Polymer.importHref(resolvedPageUrl, null, ()=>this.page='404', true);
+        var resolvedPageUrl = this.resolveUrl('hn-' + name + '.html');
+        Polymer.importHref(resolvedPageUrl, null, ()=>this.view='404', true);
       }
 
     }
