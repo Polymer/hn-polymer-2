@@ -126,6 +126,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             props.view = 'list';
             props.listPage = detail;
             break;
+          default:
+            props.view = page;
+            break;
         }
         this.setProperties(props);
       }
@@ -137,6 +140,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     }
+
+    // potential SSR injection
+    // window.dataCache = {
+    //   'http://node-hnapi.herokuapp.com/news?page=1': []
+    // }
 
     window.customElements.define(HnApp.is, HnApp);
   })();
