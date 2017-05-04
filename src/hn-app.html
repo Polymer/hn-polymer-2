@@ -9,8 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/polymer/lib/utils/import-href.html">
+]<link rel="import" href="simple-router.html">
 
 <dom-module id="hn-app">
   <template strip-whitespace>
@@ -23,16 +23,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: none !important;
       }
     </style>
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page/:detail"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+
+    <simple-router path="{{path}}"></simple-router>
 
     <slot></slot>
     <div id="views">
-      <hn-list class$="[[_computeViewClass('list', view)]]" list-type="[[listType]]" list-page="[[listPage]]" route-prefix="[[routeData.page]]"></hn-list>
+      <hn-list class$="[[_computeViewClass('list', view)]]" list-type="[[listType]]" list-page="[[listPage]]" list-name="[[listName]]"></hn-list>
       <hn-item class$="[[_computeViewClass('item', view)]]" item-id="[[itemId]]"></hn-item>
       <hn-user class$="[[_computeViewClass('user', view)]]" user-name="[[userName]]"></hn-user>
       <hn-404 name="404"></hn-404>
@@ -63,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routeChanged(routeData.page, routeData.detail, isAttached)'
+          '_routeChanged(path)'
         ];
       }
 
@@ -72,15 +68,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.isAttached = true;
       }
 
-      _routeChanged(page, detail, isAttached) {
-        if (!isAttached) {
-          return;
-        }
+      _routeChanged(path) {
+        let [page, detail] = path;
         if (!(page && detail)) {
-          this.set('route.path', 'top/1');
-          return;
+          page = 'top';
+          detail = '1';
         }
-        //console.log(this.localName, '_routeChanged', page, detail);
+        console.log(this.localName, '_routeChanged', page, detail);
         let props = {};
         switch(page) {
           case 'item':
@@ -96,6 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'ask':
           case 'show':
           case 'jobs':
+            props.listName = page;
             props.listType = pageToListType[page] || page;
             props.view = 'list';
             props.listPage = detail;
