@@ -51,11 +51,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         vertical-align: middle;
       }
     </style>
-    <app-route
-      route="{{route}}"
-      pattern="/:itemId"
-      data="{{routeData}}"
-      tail="{{subroute}}"></app-route>
     <template is="dom-if" if="[[!item.content]]">
       <div class="container">
         <a class="link title" href$="[[item.url]]">[[item.title]]</a>
