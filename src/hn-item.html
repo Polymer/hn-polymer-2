@@ -37,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div class="header">
-      <span class="toggle" on-click="toggleCollapse">[[[_collapseString]]]</span><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
+      <a class="toggle" on-click="toggleCollapse">[[[_collapseString]]]</a><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
     </div>
     <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <hr>

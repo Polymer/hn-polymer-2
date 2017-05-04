@@ -17,10 +17,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      #container {
+      .container {
         display: flex;
       }
-      #right {
+      .right {
         padding-left: 1em;
         flex: 1;
       }
@@ -32,20 +32,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <div id="container">
-      <div id="left">
+    <div class="container">
+      <div class="left">
         <div>user:</div>
         <div>created:</div>
         <div>karma:</div>
-        <div hidden$="[[!user.about]]">about:</div>
       </div>
-      <div id="right">
+      <div class="right">
         <div>[[user.id]]</div>
         <div>[[user.created]]</div>
         <div>[[user.karma]]</div>
-        <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
       </div>
     </div>
+    <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
     <br>
     <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
   </template>
@@ -66,11 +65,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.user = {};
         fetch(`http://node-hnapi.herokuapp.com/user/${userName}`).then((resp) => {
           resp.json().then((json) => {
-            if (json.about) {
-              if (json.about.startsWith('<p>')) {
-                json.about = json.about.slice(3);
-              }
-            }
             this.user = json;
           });
         });
