@@ -40,6 +40,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
   (function() {
 
+    // Minimal fetch polyfill
+    window.fetch = window.fetch || (url => {
+      return new Promise((resolve, reject) => {
+        var request = new XMLHttpRequest();
+        request.onerror = reject;
+        request.onload = () => resolve({
+          json: () => Promise.resolve(request.responseText).then(JSON.parse),
+        });
+        request.open('get', url);
+        request.send();
+      })
+    });
+
     // custom list-type for route page
     const pageToListType = {
       top: 'news',
