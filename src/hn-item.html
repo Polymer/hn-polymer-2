@@ -18,57 +18,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        margin: 0 2em;
+        font-size: .75rem;
       }
+
       :host(.hide) {
         visibility: hidden;
       }
+
+      a {
+        color: #000;
+        cursor: pointer;
+      }
+
       .title {
         display: inline-block;
-        font-size: 22px;
-        font-weight: bold;
-        padding-right: 1em;
-      }
-      .link {
-        color: #000;
+        padding: 8px 0 4px 0;
         text-decoration: none;
       }
-      .link:hover {
-        text-decoration: underline;
+
+      .domain {
+        padding-left: 4px;
+        color: #666;
       }
+
       .spacer {
         padding: 0 .5em;
       }
+
+      .container {
+        font-size: 1rem;
+      }
+
+      .meta {
+        color: #666;
+        padding: 8px 0 16px 0;
+        border-bottom: 1px solid #eee;
+      }
+
       .user {
-        color: #000;
-        text-decoration: none;
-        font-weight: bold;
-      }
-      .user:hover {
-        text-decoration: underline;
-      }
-      .container > * {
-        vertical-align: middle;
+        color: #666;
       }
     </style>
     <template is="dom-if" if="[[!item.content]]">
       <div class="container">
         <a class="link title" href$="[[item.url]]">[[item.title]]</a>
-        <span>([[item.domain]])</span>
+        <span class="domain">([[item.domain]])</span>
       </div>
-      <br>
     </template>
     <template is="dom-if" if="[[item.content]]">
       <div class="title">[[item.title]]</div>
       <div inner-h-t-m-l="[[item.content]]"></div>
-      <br>
     </template>
     <div class="meta">
       <span>[[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</span>
       <span class="spacer">|</span>
       <span>[[item.comments_count]] comments</span>
     </div>
-    <hr>
     <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
       <hn-comment comment=[[item]]></hn-comment>
     </template>

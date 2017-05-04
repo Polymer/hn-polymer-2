@@ -16,7 +16,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        padding: 0 2em;
       }
 
       :host(.hide) {
@@ -34,29 +33,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
       }
 
-      .item-title > a {
+      .title {
+        padding-top: 8px;
+      }
+
+      .title > a {
         text-decoration: none;
       }
 
-      ul > li {
-        margin: 4px;
+      .info, .domain {
+        color: #666;
       }
 
-      .item-title {
-        padding: 8px;
+      .domain {
+        padding-left: 4px;
       }
 
-      .item-info {
-        font-size: 12px;
-        padding: 0 8px 8px 8px;
-        border-bottom: 1px solid gray;
+      .info {
+        font-size: .75rem;
+        padding: 8px 0 16px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .info > a {
+        color: #666;
       }
     </style>
     <ul>
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
         <li>
-          <div class="item-title"><a href="[[item.url]]">[[item.title]]</a> ([[item.domain]])</div>
-          <div class="item-info">[[item.points]] points, by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] | hide | <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
+          <div class="title"><a href="[[item.url]]">[[item.title]]</a> <span class="domain">([[item.domain]])</span></div>
+          <div class="info">[[item.points]] points, by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] | <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
         </li>
       </template>
     </ul>

@@ -15,24 +15,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        padding: 0 2em;
+        font-size: 0.75rem;
       }
+
       :host(.hide) {
         visibility: hidden;
       }
+
+      a {
+        color: #000;
+        cursor: pointer;
+      }
+
       .container {
+        padding-top: 8px;
         display: flex;
       }
+
       .right {
         padding-left: 1em;
         flex: 1;
       }
+
+      .links {
+        padding: 8px 0;
+      }
     </style>
     <div class="container">
       <div class="left">
-        <div>user:</div>
-        <div>created:</div>
-        <div>karma:</div>
+        <div>User:</div>
+        <div>Created:</div>
+        <div>Karma:</div>
       </div>
       <div class="right">
         <div>[[user.id]]</div>
@@ -41,8 +54,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
     </div>
     <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
-    <br>
-    <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
+    <div class="links">
+      <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
+    </div>
   </template>
 
   <script>
