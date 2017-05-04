@@ -29,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return;
       }
       let anchor = Array.from(e.composedPath()).filter(n=>n.localName=='a')[0];
-      if (anchor && anchor.href.indexOf(document.origin === 0)) {
+      if (anchor && anchor.href.indexOf(document.origin) === 0) {
         e.preventDefault();
         window.history.pushState({}, '', anchor.href);
         this._handleUrlChange();
