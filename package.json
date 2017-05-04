@@ -5,6 +5,7 @@
     "eslint": "^3.12.0",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-html": "^2.0.1",
+    "lighthouse": "^1.6.5",
     "polymer-cli": "^0.18.1"
   },
   "scripts": {

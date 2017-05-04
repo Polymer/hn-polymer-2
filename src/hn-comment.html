@@ -34,9 +34,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .comment > p {
         white-space: pre-wrap;
       }
+      .user {
+        font-weight: bold;
+        color: inherit;
+        text-decoration: none;
+      }
+      .user:hover {
+        text-decoration: underline;
+      }
     </style>
     <div class="header">
-      <a class="toggle" on-click="toggleCollapse">[ [[_collapseString]] ]</a><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
+      <a class="toggle" on-click="toggleCollapse">[ [[_collapseString]] ]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
     </div>
     <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <hr>
@@ -54,16 +62,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return {
           collapsed: {
             type: Boolean,
-            value: false
+            value: false,
           },
           _collapseString: {
             type: String,
-            value: '–'
+            value: '–',
           },
           _commentThreadSize: {
             type: Number,
-            value: 0
-          }
+            value: 0,
+          },
         };
       }
       _calculateCommentThreadSize(comment) {

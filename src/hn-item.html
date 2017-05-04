@@ -17,18 +17,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
+        margin: 0 2em;
+      }
+      .link {
+        text-decoration: none;
+      }
+      .link:hover {
+        text-decoration: underline;
+      }
+      .link > h2 {
+        display: inline-block;
+        padding-right: 1em;
+      }
+      .spacer {
+        padding: 0 .5em;
       }
     </style>
+    <app-route
+      route="{{route}}"
+      pattern="/:itemId"
+      data="{{routeData}}"
+      tail="{{subroute}}"></app-route>
     <template is="dom-if" if="[[!item.content]]">
-      <h1><a href$="[[item.url]]">[[item.title]]</a></h1> <span>([[item.domain]])</span>
+      <a class="link" href$="[[item.url]]"><h2>[[item.title]]</h2></a>
+      <span>([[item.domain]])</span>
     </template>
     <template is="dom-if" if="[[item.content]]">
-      <h1>[[item.title]]</h1>
+      <h2>[[item.title]]</h2>
       <div inner-h-t-m-l="[[item.content]]"></div>
     </template>
-    <div>[[item.points]] points by <a href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</div>
-    <br>
-    <div>[[item.comments_count]] comments</div>
+    <div class="meta">
+      <span>[[item.points]] points by <a href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</span>
+      <span class="spacer">|</span>
+      <span>[[item.comments_count]] comments</span>
+    </div>
     <hr>
     <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
       <hn-comment comment=[[item]]></hn-comment>
