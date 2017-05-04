@@ -49,7 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _itemIdChanged(itemId) {
         this.item = {};
-        let url = `http://node-hnapi.herokuapp.com/item/${itemId}`;
+        let url = `https://node-hnapi.herokuapp.com/item/${itemId}`;
         console.log('fetching', url);
         fetch(url).then((resp) => {
           resp.json().then((json) => {

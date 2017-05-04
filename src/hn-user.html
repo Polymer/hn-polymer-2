@@ -63,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _userIdChanged(userName) {
         this.user = {};
-        let url = `http://node-hnapi.herokuapp.com/user/${userName}`;
+        let url = `https://node-hnapi.herokuapp.com/user/${userName}`;
         console.log('fetching', url);
         fetch(url).then((resp) => {
           resp.json().then((json) => {
