@@ -19,18 +19,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         margin: 0 2em;
       }
-      .link {
-        text-decoration: none;
-      }
-      .link:hover {
-        text-decoration: underline;
-      }
       .link > h2 {
         display: inline-block;
         padding-right: 1em;
+        color: #000;
+      }
+      .link > h2:hover {
+        text-decoration: underline;
       }
       .spacer {
         padding: 0 .5em;
+      }
+      .user {
+        color: #000;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .user:hover {
+        text-decoration: underline;
       }
     </style>
     <app-route
@@ -47,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div inner-h-t-m-l="[[item.content]]"></div>
     </template>
     <div class="meta">
-      <span>[[item.points]] points by <a href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</span>
+      <span>[[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</span>
       <span class="spacer">|</span>
       <span>[[item.comments_count]] comments</span>
     </div>

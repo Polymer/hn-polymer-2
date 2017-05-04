@@ -18,11 +18,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        background-color: #eee;
+        background-color: white;
       }
 
       header {
-        background-color: #4285f4;
+        background-color: #283593;
         height: 55px;
         padding: 15px;
         box-sizing: border-box;
@@ -35,7 +35,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         vertical-align: middle;
         font-weight: 300;
         letter-spacing: .075em;
-        margin-right: 1.8em;
+        margin-right: 1em;
+      }
+      header > svg {
+        display: inline-block;
+        height: 24px;
+        width: 24px;
+        vertical-align: middle;
+        margin-right: 1em;
+        margin-left: .5em;
+        fill: white;
+        border: 2px solid white;
       }
     </style>
     <app-location route="{{route}}"></app-location>
@@ -46,6 +56,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tail="{{subroute}}"></app-route>
 
     <header>
+      <svg viewBox="0 0 24 24">
+        <g id="polymer"><path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"/></g>
+      </svg>
       <a href="/top/1">Top</a>
       <a href="/new/1">New</a>
       <a href="/ask/1">Ask</a>
