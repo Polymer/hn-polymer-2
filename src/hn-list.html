@@ -79,7 +79,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (window.dataCache && window.dataCache[url]) {
           this._listResponse(window.dataCache[url]);
         } else {
-          debugger;
           fetch(url).then(resp => {
             resp.json().then(json => this._listResponse(json));
           });
