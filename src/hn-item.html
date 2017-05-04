@@ -32,7 +32,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .title {
         display: inline-block;
-        padding: 8px 0 4px 0;
         text-decoration: none;
       }
 
@@ -70,7 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div inner-h-t-m-l="[[item.content]]"></div>
     </template>
     <div class="meta">
-      <span>[[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</span>
+      [[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]
       <span class="spacer">|</span>
       <span>[[item.comments_count]] comments</span>
     </div>

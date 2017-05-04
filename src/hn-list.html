@@ -33,7 +33,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
       }
 
-      .title {
+      li:first-of-type {
+        padding-top: 0;
+      }
+
+      li {
         padding-top: 8px;
       }
 
@@ -58,12 +62,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .info > a {
         color: #666;
       }
+
+      .spacer {
+        padding: 0 .5em;
+      }
     </style>
     <ul>
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
         <li>
           <div class="title"><a href="[[item.url]]">[[item.title]]</a> <span class="domain">([[item.domain]])</span></div>
-          <div class="info">[[item.points]] points, by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] | <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
+          <div class="info">[[item.points]] points by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] <span class="spacer">|</span> <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
         </li>
       </template>
     </ul>
