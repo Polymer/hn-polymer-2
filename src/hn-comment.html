@@ -1,0 +1,89 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="hn-comment">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .comments {
+        padding-left: 30px;
+      }
+
+      .toggle {
+        cursor: pointer;
+      }
+
+      .header {
+        display: flex;
+      }
+      .header > * {
+        margin-right: .5em;
+      }
+      .comment > p {
+        white-space: pre-wrap;
+      }
+    </style>
+    <div class="header">
+      <a class="toggle" on-click="toggleCollapse">[ [[_collapseString]] ]</a><a href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
+    </div>
+    <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
+    <hr>
+    <div class="comments" hidden$="[[collapsed]]">
+      <template is="dom-repeat" items="[[comment.comments]]" initial-count="3">
+        <hn-comment comment="[[item]]"></hn-comment>
+      </template>
+    </div>
+  </template>
+  <script>
+  (function() {
+    class HnComment extends Polymer.Element {
+      static get is() { return 'hn-comment'; }
+      static get properties() {
+        return {
+          collapsed: {
+            type: Boolean,
+            value: false
+          },
+          _collapseString: {
+            type: String,
+            value: '–'
+          },
+          _commentThreadSize: {
+            type: Number,
+            value: 0
+          }
+        };
+      }
+      _calculateCommentThreadSize(comment) {
+        let threadSize = 0;
+        let flat = (comment) => {
+          threadSize++;
+          comment.comments.forEach(flat);
+        };
+        flat(comment);
+        return threadSize;
+      }
+      toggleCollapse() {
+        this.collapsed = !this.collapsed;
+        if (!this._commentThreadSize) {
+          this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
+        }
+        this._collapseString = this.collapsed ? `+ ${this._commentThreadSize}` : '–';
+      }
+    }
+    customElements.define(HnComment.is, HnComment);
+  })();
+  </script>
+</dom-module>
