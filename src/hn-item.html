@@ -19,12 +19,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         margin: 0 2em;
       }
-      .link > h2 {
-        display: inline-block;
-        padding-right: 1em;
-        color: #000;
+      :host(.hide) {
+        visibility: hidden;
       }
-      .link > h2:hover {
+      .title {
+        display: inline-block;
+        font-size: 22px;
+        font-weight: bold;
+        padding-right: 1em;
+      }
+      .link {
+        color: #000;
+        text-decoration: none;
+      }
+      .link:hover {
         text-decoration: underline;
       }
       .spacer {
@@ -38,6 +46,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .user:hover {
         text-decoration: underline;
       }
+      .container > * {
+        vertical-align: middle;
+      }
     </style>
     <app-route
       route="{{route}}"
@@ -45,12 +56,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="{{routeData}}"
       tail="{{subroute}}"></app-route>
     <template is="dom-if" if="[[!item.content]]">
-      <a class="link" href$="[[item.url]]"><h2>[[item.title]]</h2></a>
-      <span>([[item.domain]])</span>
+      <div class="container">
+        <a class="link title" href$="[[item.url]]">[[item.title]]</a>
+        <span>([[item.domain]])</span>
+      </div>
+      <br>
     </template>
     <template is="dom-if" if="[[item.content]]">
-      <h2>[[item.title]]</h2>
+      <div class="title">[[item.title]]</div>
       <div inner-h-t-m-l="[[item.content]]"></div>
+      <br>
     </template>
     <div class="meta">
       <span>[[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</span>
@@ -72,10 +87,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _fetchItemData(itemId) {
         this.item = {};
+        this.classList.add('hide');
         let url = `https://node-hnapi.herokuapp.com/item/${itemId}`;
         fetch(url).then((resp) => {
           resp.json().then((json) => {
             this.item = json;
+            this.classList.remove('hide');
           });
         });
       }

@@ -73,10 +73,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0 auto;
         background: #eee;
       }
+
+      header {
+        background-color: #283593;
+        height: 55px;
+        padding: 15px;
+        box-sizing: border-box;
+      }
+
+      header > a {
+        color: white;
+        line-height: 24px;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: 300;
+        letter-spacing: .075em;
+        margin-right: 1em;
+      }
+      .logo {
+        margin-left: .5em;
+      }
+      header svg {
+        display: inline-block;
+        height: 24px;
+        width: 24px;
+        vertical-align: middle;
+        fill: white;
+        border: 2px solid white;
+      }
     </style>
   </head>
   <body>
-    <hn-app></hn-app>
+    <hn-app>
+      <header>
+        <a class="logo" href="https://www.polymer-project.org" target="_blank">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"/>
+          </svg>
+        </a>
+        <a href="/top/1">Top</a>
+        <a href="/new/1">New</a>
+        <a href="/ask/1">Ask</a>
+        <a href="/show/1">Show</a>
+        <a href="/jobs/1">Jobs</a>
+      </header>
+    </hn-app>
     <!-- Built with love using Polymer Starter Kit -->
   </body>
 </html>

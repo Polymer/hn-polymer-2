@@ -15,6 +15,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
+        padding: 0 2em;
+      }
+      :host(.hide) {
+        visibility: hidden;
       }
       .container {
         display: flex;
@@ -55,10 +59,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _fetchUserData(userName) {
         this.user = {};
+        this.classList.add('hide');
         let url = `https://node-hnapi.herokuapp.com/user/${userName}`;
         fetch(url).then((resp) => {
           resp.json().then((json) => {
             this.user = json;
+            this.classList.remove('hide');
           });
         });
       }
