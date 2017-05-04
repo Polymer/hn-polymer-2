@@ -28,11 +28,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     <div>[[item.points]] points by <a href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]</div>
     <br>
-    <app-route
-        route="{{route}}"
-        pattern="/:itemId"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
     <div>[[item.comments_count]] comments</div>
     <hr>
     <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
@@ -45,12 +40,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class HnItem extends Polymer.Element {
       static get is() { return 'hn-item'; }
 
-      static get observers() { return ['_itemIdChanged(routeData.itemId)']; }
+      static get observers() { return ['_fetchItemData(itemId)']; }
 
-      _itemIdChanged(itemId) {
+      _fetchItemData(itemId) {
         this.item = {};
-        let url = `https://node-hnapi.herokuapp.com/item/${itemId}`;
-        console.log('fetching', url);
+        let url = `http://node-hnapi.herokuapp.com/item/${itemId}`;
         fetch(url).then((resp) => {
           resp.json().then((json) => {
             this.item = json;

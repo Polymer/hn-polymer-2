@@ -18,6 +18,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
 
+      :host(.hide) {
+        visibility: hidden;
+      }
+
       ul {
         list-style-type: none;
         padding: 0;
@@ -47,11 +51,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-bottom: 1px solid gray;
       }
     </style>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
     <ul>
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
         <li>
@@ -60,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </li>
       </template>
     </ul>
-    <a href="[[route.prefix]]/[[_computeNextPage(routeData.page)]]">More...</a>
+    <a href="/[[routePrefix]]/[[_computeNextPage(listPage)]]">More...</a>
   </template>
   <script>
   (function() {
@@ -68,27 +67,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get is() { return 'hn-list'; }
 
       static get observers() {
-        return ['_listTypeChanged(listType, routeData.page)']
+        return ['_fetchListData(listType, listPage)']
       }
 
-      _listTypeChanged(listType, page) {
-        this.articles = [];
-        // Reset page if list type changes.
-        if (this._oldListType && (listType != this._oldListType)) {
-          if (page) {
-            this.set('routeData.page', null);
-            return;
-          }
-        }
-        this._oldListType = listType;
-        let url = `https://node-hnapi.herokuapp.com/${listType}`;
+      _fetchListData(listType, page) {
+        this.classList.add('hide');
+        let url = `http://node-hnapi.herokuapp.com/${listType}`;
         if (page) {
           url += `?page=${page}`;
         }
-        console.log('fetching', url);
         fetch(url).then(resp => {
           resp.json().then(json => {
             this.articles = json;
+            this.classList.remove('hide');
           });
         });
       }

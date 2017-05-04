@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
-        pattern="/:page"
+        pattern="/:page/:detail"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
@@ -58,18 +58,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         attr-for-selected="name"
         fallback-selection="404"
         role="main">
-      <hn-list name="list" list-type="[[listType]]" route="[[listSubroute]]"></hn-list>
-      <hn-item name="item" route="[[itemSubroute]]"></hn-item>
-      <hn-user name="user" route="[[userSubroute]]"></hn-user>
-      <!-- <hn-list name="list" list-type="[[listType]]" route="[[subroute]]"></hn-list>
-      <hn-item name="item" route="[[subroute]]"></hn-item>
-      <hn-user name="user" route="[[subroute]]"></hn-user> -->
+      <hn-list name="list" list-type="[[listType]]" list-page="[[listPage]]" route-prefix="[[routeData.page]]"></hn-list>
+      <hn-item name="item" item-id="[[itemId]]"></hn-item>
+      <hn-user name="user" user-name="[[userName]]"></hn-user>
       <hn-404 name="404"></hn-404>
     </iron-pages>
   </template>
 
   <script>
   (function() {
+
+    // custom list-type for route page
+    const pageToListType = {
+      top: 'news',
+      new: 'newest'
+    }
+
     class HnApp extends Polymer.Element {
 
       static get is() { return 'hn-app'; }
@@ -85,7 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routeChanged(routeData.page, subroute, isAttached)'
+          '_routeChanged(routeData.page, routeData.detail, isAttached)'
         ];
       }
 
@@ -94,48 +98,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.isAttached = true;
       }
 
-      _routeChanged(page, subroute, isAttached) {
+      _routeChanged(page, detail, isAttached) {
         if (!isAttached) {
           return;
         }
-        if (!page) {
+        if (!(page && detail)) {
           this.set('route.path', 'top/1');
           return;
         }
-        let listType = this.listType;
-        let view = page;
+        //console.log(this.localName, '_routeChanged', page, detail);
+        let props = {};
         switch(page) {
+          case 'item':
+            props.view = 'item';
+            props.itemId = detail;
+            break;
+          case 'user':
+            props.view = 'user';
+            props.userName = detail;
+            break;
           case 'top':
-            listType = 'news';
-            view = 'list';
-            break;
           case 'new':
-            listType = 'newest';
-            view = 'list';
-            break;
           case 'ask':
           case 'show':
           case 'jobs':
-            listType = page;
-            view = 'list';
+            props.listType = pageToListType[page] || page;
+            props.view = 'list';
+            props.listPage = detail;
             break;
         }
-        let props = {
-          view,
-          listType
-        };
-        switch (view) {
-          case 'list':
-            props.listSubroute = subroute;
-            break;
-          case 'item':
-            props.itemSubroute = subroute;
-            break;
-          case 'user':
-            props.userSubroute = subroute;
-            break;
-        }
-
         this.setProperties(props);
       }
 

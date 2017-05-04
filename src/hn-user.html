@@ -25,13 +25,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flex: 1;
       }
     </style>
-
-    <app-route
-        route="{{route}}"
-        pattern="/:userName"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
-
     <div class="container">
       <div class="left">
         <div>user:</div>
@@ -54,17 +47,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class HnUser extends Polymer.Element {
       static get is() { return 'hn-user'; }
       static get observers() {
-        return ['_userIdChanged(routeData.userName)'];
+        return ['_fetchUserData(userName)'];
       }
 
       _hnLink(type, userName) {
         return `https://news.ycombinator.com/${type}?id=${userName}`;
       }
 
-      _userIdChanged(userName) {
+      _fetchUserData(userName) {
         this.user = {};
-        let url = `https://node-hnapi.herokuapp.com/user/${userName}`;
-        console.log('fetching', url);
+        let url = `http://node-hnapi.herokuapp.com/user/${userName}`;
         fetch(url).then((resp) => {
           resp.json().then((json) => {
             this.user = json;
