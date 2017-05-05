@@ -67,10 +67,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 0 .5em;
       }
 
-      .more {
-        display: inline-block;
+      .forwardback {
         padding-top: 16px;
+        display: flex;
+        /*justify-content: space-between;*/
+      }
+
+      .forwardback > a {
         text-decoration: none;
+      }
+
+      .forwardback > a:hover {
+        text-decoration: underline;
+      }
+
+      .forwardback > span {
+        flex: 1;
+        text-align: center;
+      }
+
+      .next {
+        padding-left: 3ex;
       }
     </style>
     <ul>
@@ -81,7 +98,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </li>
       </template>
     </ul>
-    <a class="more" href="/[[listName]]/[[_computeNextPage(listPage)]]">More...</a>
+    <div class="forwardback">
+      <a class="prev" href="/[[listName]]/[[_computePrevPage(listPage)]]">◀ Previous</a>
+      <span>Page [[listPage]]</span>
+      <a class="next" href="/[[listName]]/[[_computeNextPage(listPage)]]">Next ▶</a>
+    </div>
   </template>
   <script>
   (function() {
@@ -114,6 +135,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _computeNextPage(page) {
         return parseInt(page || 1) + 1;
+      }
+
+      _computePrevPage(page) {
+        return (parseInt(page || 2) - 1) || 1;
       }
     }
 
