@@ -50,7 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div class="header">
-      <a class="toggle" on-click="toggleCollapse">[ [[_collapseString]] ]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
+      <a class="toggle" on-click="toggleCollapse">[[_collapseString]]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><span>[[comment.time_ago]]</span>
     </div>
     <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <div class="comments" hidden$="[[collapsed]]">
@@ -61,24 +61,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
   (function() {
+
     class HnComment extends Polymer.Element {
+
       static get is() { return 'hn-comment'; }
-      static get properties() {
-        return {
-          collapsed: {
-            type: Boolean,
-            value: false,
-          },
-          _collapseString: {
-            type: String,
-            value: '–',
-          },
-          _commentThreadSize: {
-            type: Number,
-            value: 0,
-          },
-        };
+
+      constructor() {
+        super();
+        this.collapsed = false;
+        this._collapseString = '[-]';
+        this._commentThreadSize = 0;
       }
+
       _calculateCommentThreadSize(comment) {
         let threadSize = 0;
         let flat = (comment) => {
@@ -88,15 +82,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flat(comment);
         return threadSize;
       }
+
       toggleCollapse() {
         this.collapsed = !this.collapsed;
         if (!this._commentThreadSize) {
           this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
         }
-        this._collapseString = this.collapsed ? `+ ${this._commentThreadSize}` : '–';
+        this._collapseString = this.collapsed ? `[+${this._commentThreadSize}]` : '[–]';
       }
+
     }
+
     customElements.define(HnComment.is, HnComment);
+
   })();
   </script>
 </dom-module>

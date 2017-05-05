@@ -9,8 +9,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymer/lib/utils/import-href.html">
 <link rel="import" href="simple-router.html">
+<!-- app resources are tiny, otherwise would code split per PRPL pattern -->
+<link rel="import" href="hn-list.html">
+<link rel="import" href="hn-item.html">
+<link rel="import" href="hn-user.html">
+<link rel="import" href="hn-404.html">
 
 <dom-module id="hn-app">
   <template strip-whitespace>
@@ -66,15 +70,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get is() { return 'hn-app'; }
 
-      static get properties() {
-        return {
-          view: {
-            type: String,
-            observer: '_viewChanged',
-          }
-        };
-      }
-
       static get observers() {
         return [
           '_routeChanged(path)'
@@ -115,22 +110,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         document.body.scrollTop = 0;
       }
 
-      _viewChanged(name) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('hn-' + name + '.html');
-        Polymer.importHref(resolvedPageUrl, null, ()=>this.view='404', true);
-      }
-
       _computeViewClass(name, view) {
         return name == view ? 'selectedView' : '';
       }
 
     }
-
-    // potential SSR injection
-    // window.dataCache = {
-    //   'http://node-hnapi.herokuapp.com/news?page=1': []
-    // }
 
     window.customElements.define(HnApp.is, HnApp);
   })();

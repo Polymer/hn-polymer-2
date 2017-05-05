@@ -13,15 +13,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script>
 (function() {
   class SimpleRouter extends Polymer.Element {
+
     static get properties() { return {
       path: { notify: true, computed: '_computePath(location)' }
     }};
+
     constructor() {
       super();
       document.body.addEventListener('click', e=>this._handleClick(e));
       window.addEventListener('popstate', ()=>this._handleUrlChange());
       this._handleUrlChange()
     }
+
     _handleClick(e) {
       if ((e.button !== 0) ||           // Left click only
           (e.metaKey || e.ctrlKey)) {   // No modifiers
@@ -40,12 +43,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._handleUrlChange();
       }
     }
+
     _handleUrlChange() {
       this.location = window.location.href;
     }
+
     _computePath(location) {
       return window.decodeURIComponent(window.location.pathname).slice(1).split('/');
     }
+
   }
   customElements.define('simple-router', SimpleRouter);
 })();
