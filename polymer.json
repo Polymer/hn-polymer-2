@@ -1,11 +1,6 @@
 {
   "entrypoint": "index.html",
   "shell": "src/hn-app.html",
-  "fragments": [
-    "src/hn-list.html",
-    "src/hn-item.html",
-    "src/hn-user.html"
-  ],
   "sources": [
     "src/**/*",
     "images/**/*",

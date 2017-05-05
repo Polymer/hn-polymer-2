@@ -14,7 +14,38 @@ module.exports = {
   staticFileGlobs: [
     '/index.html',
     '/manifest.json',
-    '/bower_components/webcomponentsjs/*',
+    '/bower_components/webcomponentsjs/webcomponents*.js',
+    '/bower_components/webcomponentsjs/custom-elements-es5-adapter.js'
+  ],
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/node-hnapi\.herokuapp\.com\/(news|newest|ask|show|jobs)/,
+      handler: 'fastest',
+      options: {
+        cache: {
+          maxEntries: 30,
+          name: 'articles-cache'
+        }
+      }
+    }, {
+      urlPattern: /^https:\/\/node-hnapi\.herokuapp\.com\/item\//,
+      handler: 'fastest',
+      options: {
+        cache: {
+          maxEntries: 30,
+          name: 'comments-cache'
+        }
+      }
+    }, {
+      urlPattern: /^https:\/\/node-hnapi\.herokuapp\.com\/user\//,
+      handler: 'fastest',
+      options: {
+        cache: {
+          maxEntries: 30,
+          name: 'user-cache'
+        }
+      }
+    }
   ],
   navigateFallback: 'index.html',
 };
