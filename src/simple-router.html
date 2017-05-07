@@ -8,21 +8,20 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-
 <script>
 (function() {
-  class SimpleRouter extends Polymer.Element {
-
-    static get properties() { return {
-      path: { notify: true, computed: '_computePath(location)' }
-    }};
+  class SimpleRouter extends HTMLElement {
 
     constructor() {
       super();
       document.body.addEventListener('click', e=>this._handleClick(e));
       window.addEventListener('popstate', ()=>this._handleUrlChange());
-      this._handleUrlChange()
+    }
+
+    connectedCallback() {
+      Polymer.Async.microTask.run(() => {
+        this._handleUrlChange();
+      });
     }
 
     _handleClick(e) {
@@ -46,13 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _handleUrlChange() {
       this.location = window.location.href;
-    }
-
-    _computePath(location) {
-      return window.decodeURIComponent(window.location.pathname).slice(1).split('/');
+      this.path = window.decodeURIComponent(window.location.pathname).slice(1).split('/');
+      let detail = {value: this.path};
+      this.dispatchEvent(new CustomEvent('path-changed', {detail}));
     }
 
   }
+
   customElements.define('simple-router', SimpleRouter);
 })();
 </script>

@@ -1,0 +1,113 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/lib/utils/boot.html">
+<link rel="import" href="../bower_components/polymer/lib/utils/mixin.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-module.html">
+<link rel="import" href="../bower_components/polymer/lib/mixins/property-accessors.html">
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer.SimpleElementMixin = Polymer.dedupingMixin(function(base) {
+
+    const polymerSimpleElementBase = Polymer.PropertyAccessors(base);
+
+    /**
+     * @polymerMixinClass
+     * @unrestricted
+     */
+    class SimpleElementMixin extends polymerSimpleElementBase {
+
+      static get observedAttributes() { return []; }
+
+      connectedCallback() {
+        this._flushProperties();
+      }
+
+      ready() {
+        const proto = Object.getPrototypeOf(this);
+        if (!proto.hasOwnProperty('__finalized')) {
+          proto.__finalized = true;
+          this.constructor.createPropertiesForAttributes();
+        }
+        super.ready();
+        const template = this.constructor.template;
+        if (template) {
+          this._attachDom(this._stampTemplate(template));
+        }
+      }
+
+      _attachDom(dom) {
+        this.$ = dom.$;
+        this.attachShadow({mode: 'open'});
+        this.shadowRoot.appendChild(dom);
+      }
+
+      _stampTemplate(template) {
+        let dom = document.importNode(template.content, true);
+        let n$ = dom.querySelectorAll('[id]');
+        dom.$ = {};
+        for (let i=0; i < n$.length; i++) {
+          let n = n$[i];
+          dom.$[n.getAttribute('id')] = n;
+        }
+        return dom;
+      }
+
+      _dataToDom(data, elementMap) {
+        const map = elementMap || this.$;
+        for (let prop in data) {
+          this._dataToElement(data[prop], map[prop]);
+        }
+      }
+
+      _dataToElement(data, element) {
+        for (let prop in data) {
+          if (prop == 'classList') {
+            this._dataToClassList(data[prop], element);
+          } else if (prop == 'attributes') {
+            this._dataToAttributes(data[prop], element)
+          } else {
+            element[prop] = data[prop];
+          }
+        }
+      }
+
+      _dataToClassList(data, element) {
+        for (let prop in data) {
+          if (data[prop]) {
+            element.classList.add(prop);
+          } else {
+            element.classList.remove(prop);
+          }
+        }
+      }
+
+      _dataToAttributes(data, element) {
+        for (let prop in data) {
+          let value = data[prop];
+          value = value === false ? null : (value === true ? '' : value);
+          if (value == null) {
+            element.removeAttribute(prop);
+          } else {
+            element.setAttribute(prop, value);
+          }
+        }
+      }
+
+    }
+
+    return SimpleElementMixin;
+  });
+
+})();
+</script>

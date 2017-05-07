@@ -8,8 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="simple-element-mixin.html">
+<link rel="import" href="simple-list-mixin.html">
 
 <dom-module id="hn-list">
   <template strip-whitespace>
@@ -70,7 +70,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .forwardback {
         padding-top: 16px;
         display: flex;
-        /*justify-content: space-between;*/
       }
 
       .forwardback > a {
@@ -85,37 +84,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flex: 1;
         text-align: center;
       }
-
-      .next {
-        padding-left: 3ex;
-      }
     </style>
-    <ul>
-      <template is="dom-repeat" items="[[articles]]" initial-count="10">
-        <li>
-          <div class="title"><a href="[[item.url]]">[[item.title]]</a> <span class="domain">([[item.domain]])</span></div>
-          <div class="info">[[item.points]] points by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] <span class="spacer">|</span> <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
-        </li>
-      </template>
-    </ul>
+    <ul id="list"></ul>
     <div class="forwardback">
-      <a class="prev" href="/[[listName]]/[[_computePrevPage(listPage)]]">◀ Previous</a>
-      <span>Page [[listPage]]</span>
-      <a class="next" href="/[[listName]]/[[_computeNextPage(listPage)]]">Next ▶</a>
+      <a id="prev">◀ Previous</a>
+      <span id="pageDisplay"></span>
+      <a id="next">Next ▶</a>
     </div>
   </template>
+
+  <template id="itemTemplate"><li id="item">
+    <div class="title"><a id="title"></a> <span id="domain" class="domain"></span></div>
+    <div class="info">
+      <span id="points"></span> points by <a id="user"></a> <span id="time"></span>
+      <span class="spacer">|</span> <a id="comments"></a>
+    </div>
+  </li></template>
+
   <script>
   (function() {
-    class HnList extends Polymer.Element {
-      static get is() { return 'hn-list'; }
 
-      static get observers() {
-        return ['_fetchListData(listType, listPage)']
+    const ELEMENT_NAME = 'hn-list';
+
+    const itemTemplate = Polymer.DomModule.import(ELEMENT_NAME, '#itemTemplate');
+
+    class HnList extends Polymer.SimpleListMixin(Polymer.SimpleElementMixin(HTMLElement)) {
+
+      static get observedAttributes() {
+        return ['type', 'page', 'path'];
       }
 
-      _fetchListData(listType, page) {
+      static get template() {
+        return Polymer.DomModule.import(ELEMENT_NAME, 'template');
+      }
+
+      _propertiesChanged(props, changed, old) {
+        if (changed.type || changed.page) {
+          this._fetchListData(props.type, props.page);
+        }
+        if (changed._data) {
+          this._renderList(this.$.list, changed._data, itemTemplate,
+            (n, d) => {
+              return {
+                title: {href: d.url, textContent: d.title},
+                domain: {textContent: `(${d.domain})`},
+                points: {textContent: d.points},
+                user: {href: `/user/${d.user}`, textContent: d.user},
+                time: {textContent: d.time_ago},
+                comments: {href: `/item/${d.id}`, textContent: `${d.comments_count} comments`}
+              }
+            }
+          );
+          const next = parseInt(props.page || 1) + 1;
+          const prev = (parseInt(props.page || 2) - 1) || 1;
+          this._dataToDom({
+            prev: {href: `/${props.path}/${prev}`},
+            pageDisplay: {textContent: `Page ${props.page}`},
+            next: {href: `/${props.path}/${next}`}
+          });
+        }
+      }
+
+      _fetchListData(type, page) {
         this.classList.add('hide');
-        let url = `https://node-hnapi.herokuapp.com/${listType}`;
+        let url = `https://node-hnapi.herokuapp.com/${type}`;
         if (page) {
           url += `?page=${page}`;
         }
@@ -123,26 +155,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._listResponse(window.dataCache[url]);
         } else {
           fetch(url).then(resp => {
-            resp.json().then(json => this._listResponse(json));
+            resp.json().then(data => this._listResponse(data));
           });
         }
       }
 
-      _listResponse(json) {
-        this.articles = json;
+      _listResponse(data) {
+        this._data = data;
         this.classList.remove('hide');
       }
 
-      _computeNextPage(page) {
-        return parseInt(page || 1) + 1;
-      }
-
-      _computePrevPage(page) {
-        return (parseInt(page || 2) - 1) || 1;
-      }
     }
 
-    window.customElements.define(HnList.is, HnList);
+    HnList.prototype._createPropertyAccessor('_data');
+
+    window.customElements.define(ELEMENT_NAME, HnList);
   })();
   </script>
 </dom-module>

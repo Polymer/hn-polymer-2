@@ -1,0 +1,74 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer.SimpleListMixin = Polymer.dedupingMixin(function(base) {
+
+    /**
+     * @polymerMixinClass
+     * @unrestricted
+     */
+    class SimpleListMixin extends base {
+
+      _renderList(container, data, template, itemCallback) {
+        let n = container.firstChild;
+        for (let i=0, d; i < data.length; i++) {
+          d = data[i];
+          // reuse existing list dom
+          n = this._ensureListItem(container, i, template);
+          if (itemCallback) {
+            const info = itemCallback(n, d);
+            if (info && this._dataToDom) {
+              this._dataToDom(info, n.item$);
+            }
+          }
+        }
+        // clear remainder of list dom
+        if (n) {
+          while (n.nextSibling) {
+            container.removeChild(n.nextSibling);
+          }
+          if (!data.length) {
+            container.removeChild(n);
+          }
+        }
+      }
+
+      _ensureListItem(container, index, template) {
+        let item = container.childNodes[index];
+        if (!item) {
+          let dom = this._stampTemplate(template);
+          item = dom.$ && dom.$.item;
+          if (item) {
+            item.item$ = dom.$;
+          }
+          container.appendChild(dom);
+        }
+        return item;
+      }
+
+      _stampTemplate(template) {
+        if (super._stampTemplate) {
+          return super._stampTemplate(template);
+        } else {
+          return document.importNode(template.content, true);
+        }
+      }
+
+    }
+
+    return SimpleListMixin;
+  });
+
+})();
+</script>

@@ -6,9 +6,9 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+-->`
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="simple-element-mixin.html">
 
 <dom-module id="hn-user">
   <template strip-whitespace>
@@ -47,42 +47,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div>Karma:</div>
       </div>
       <div class="right">
-        <div>[[user.id]]</div>
-        <div>[[user.created]]</div>
-        <div>[[user.karma]]</div>
+        <div id="user"></div>
+        <div id="created"></div>
+        <div id="karma"></div>
       </div>
     </div>
-    <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
+    <div id="about"></div>
     <div class="links">
-      <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
+      <a id="submissions">submissions</a> |
+      <a id="threads">comments</a> |
+      <a id="favorites">favorites</a>
     </div>
   </template>
 
   <script>
   (function() {
-    class HnUser extends Polymer.Element {
-      static get is() { return 'hn-user'; }
-      static get observers() {
-        return ['_fetchUserData(userName)'];
+
+    const ELEMENT_NAME = 'hn-user';
+
+    class HnUser extends Polymer.SimpleElementMixin(HTMLElement) {
+
+      static get observedAttributes() { return ['name']; }
+
+      static get template() {
+        return Polymer.DomModule.import(ELEMENT_NAME, 'template');
       }
 
-      _hnLink(type, userName) {
-        return `https://news.ycombinator.com/${type}?id=${userName}`;
+      _propertiesChanged(props, changed) {
+        if (changed.name) {
+          this._fetchUserData(changed.name);
+        }
+        if (changed._data) {
+          this._renderUser(changed._data);
+        }
       }
 
-      _fetchUserData(userName) {
+      _fetchUserData(name) {
         this.classList.add('hide');
-        let url = `https://node-hnapi.herokuapp.com/user/${userName}`;
+        let url = `https://node-hnapi.herokuapp.com/user/${name}`;
         fetch(url).then((resp) => {
-          resp.json().then((json) => {
-            this.user = json;
+          resp.json().then((data) => {
+            this._data = data;
             this.classList.remove('hide');
           });
         });
       }
+
+      _renderUser(data) {
+        this._dataToDom({
+          user: {textContent: data.id},
+          created: {textContent: data.created},
+          karma: {textContent: data.karma},
+          about: {innerHTML: data.about, attributes: {hidden: !(data.about)}},
+          submissions: {href: this._hnLink('submitted', data.id)},
+          threads: {href: this._hnLink('threads', data.id)},
+          favorites: {href: this._hnLink('favorites', data.id)},
+        })
+      }
+
+      _hnLink(type, name) {
+        return `https://news.ycombinator.com/${type}?id=${name}`;
+      }
+
     }
 
-    window.customElements.define(HnUser.is, HnUser);
+    HnUser.prototype._createPropertyAccessor('_data');
+
+    window.customElements.define(ELEMENT_NAME, HnUser);
   })();
   </script>
 </dom-module>

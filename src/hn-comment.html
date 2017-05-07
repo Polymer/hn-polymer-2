@@ -8,7 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="simple-element-mixin.html">
+<link rel="import" href="simple-list-mixin.html">
 
 <dom-module id="hn-comment">
   <template strip-whitespace>
@@ -16,17 +17,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+
       a {
         color: #000;
         cursor: pointer;
-      }
-
-      .comment {
-        border-bottom: var(--separator-border);
-      }
-
-      .comments {
-        padding-left: 8px;
       }
 
       .toggle {
@@ -42,35 +36,83 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-right: .25rem;
         color: var(--detail-font-color);
       }
+
+      .comment {
+        border-bottom: var(--separator-border);
+      }
+
       .comment > p {
         overflow-wrap: break-word;
       }
+
       .comment > p:first-of-type {
         margin-top: 0;
       }
+
+      .comments {
+        padding-left: 8px;
+      }
     </style>
     <div class="header">
-      <a class="toggle" on-click="toggleCollapse">[[_collapseString]]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
+      <a class="toggle" id="toggle">[-]</a>
+      <a class="user" id="user"></a>
+      <a id="time"></a>
     </div>
-    <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
-    <div class="comments" hidden$="[[collapsed]]">
-      <template is="dom-repeat" items="[[comment.comments]]" initial-count="3">
-        <hn-comment comment="[[item]]"></hn-comment>
-      </template>
-    </div>
+    <div id="comment" class="comment"></div>
+    <div id="comments" class="comments"></div>
   </template>
+
+  <template id="itemTemplate"><hn-comment id="item"></hn-comment></template>
+
   <script>
   (function() {
 
-    class HnComment extends Polymer.Element {
+    const ELEMENT_NAME = 'hn-comment';
 
-      static get is() { return 'hn-comment'; }
+    const itemTemplate = Polymer.DomModule.import(ELEMENT_NAME, '#itemTemplate');
+
+    class HnComment extends Polymer.SimpleListMixin(Polymer.SimpleElementMixin(HTMLElement)) {
+
+      static get observedAttributes() { return ['comment']; }
+
+      static get template() {
+        return Polymer.DomModule.import(ELEMENT_NAME, 'template');
+      }
 
       constructor() {
         super();
-        this.collapsed = false;
-        this._collapseString = '[-]';
+        this._collapsed = false;
         this._commentThreadSize = 0;
+      }
+
+      _attachDom(dom) {
+        dom.$.toggle.addEventListener('click', (e) => this._toggleCollapse(e));
+        super._attachDom(dom);
+      }
+
+      _propertiesChanged(props) {
+        const comment = props.comment;
+        const comments = comment.comments;
+        this._dataToDom({
+          user: {href: `/user/${comment.user}`, textContent: `${comment.user}`},
+          time: {href: `/item/${comment.id}`, textContent: `${comment.time_ago}`},
+          comment: {innerHTML: comment.content},
+
+        });
+        this._renderList(this.$.comments, comments, itemTemplate,
+          (n, d) => { return {item: {comment: d}}}
+        );
+      }
+
+      _toggleCollapse() {
+        this._collapsed = !this._collapsed;
+        if (!this._commentThreadSize) {
+          this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
+        }
+        this._dataToDom({
+          toggle: {textContent: this._collapsed ? `[+${this._commentThreadSize}]` : '[–]'},
+          comment: {attributes: {hidden: this._collapsed}}
+        });
       }
 
       _calculateCommentThreadSize(comment) {
@@ -83,17 +125,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return threadSize;
       }
 
-      toggleCollapse() {
-        this.collapsed = !this.collapsed;
-        if (!this._commentThreadSize) {
-          this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
-        }
-        this._collapseString = this.collapsed ? `[+${this._commentThreadSize}]` : '[–]';
-      }
-
     }
 
-    customElements.define(HnComment.is, HnComment);
+    customElements.define(ELEMENT_NAME, HnComment);
 
   })();
   </script>

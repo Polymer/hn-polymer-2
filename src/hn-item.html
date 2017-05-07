@@ -8,9 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="simple-element-mixin.html">
+<link rel="import" href="simple-list-mixin.html">
 <link rel="import" href="hn-comment.html">
 
 <dom-module id="hn-item">
@@ -44,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 0 .5em;
       }
 
-      .container {
+      .header {
         font-size: 1rem;
       }
 
@@ -58,45 +57,74 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #666;
       }
     </style>
-    <template is="dom-if" if="[[!item.content]]">
-      <div class="container">
-        <a class="link title" href$="[[item.url]]">[[item.title]]</a>
-        <span class="domain">([[item.domain]])</span>
-      </div>
-    </template>
-    <template is="dom-if" if="[[item.content]]">
-      <div class="title container">[[item.title]]</div>
-      <div inner-h-t-m-l="[[item.content]]"></div>
-    </template>
-    <div class="meta">
-      [[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]
-      <span class="spacer">|</span>
-      <span>[[item.comments_count]] comments</span>
+    <div id="header" class="header">
+      <a id="title" class="link title"></a>
+      <span id="domain" class="domain"></span>
     </div>
-    <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
-      <hn-comment comment=[[item]]></hn-comment>
-    </template>
+    <div id="content"></div>
+    <div class="meta">
+      <span id="points"></span> points by <a id="user" class="user"></a>
+      <span id="time"></span><span class="spacer">|</span>
+      <span id="count"></span>
+    </div>
+    <div id="comments"></div>
   </template>
+
+  <template id="itemTemplate"><hn-comment id="item"></hn-comment></template>
 
   <script>
   (function() {
-    class HnItem extends Polymer.Element {
-      static get is() { return 'hn-item'; }
 
-      static get observers() { return ['_fetchItemData(itemId)']; }
+    const ELEMENT_NAME = 'hn-item';
+
+    const itemTemplate = Polymer.DomModule.import(ELEMENT_NAME, '#itemTemplate');
+
+    class HnItem extends Polymer.SimpleListMixin(Polymer.SimpleElementMixin(HTMLElement)) {
+
+      static get observedAttributes() { return ['itemid']; }
+
+      static get template() {
+        return Polymer.DomModule.import(ELEMENT_NAME, 'template');
+      }
+
+      _propertiesChanged(props, changed, old) {
+        if (changed.itemid) {
+          this._fetchItemData(changed.itemid);
+        }
+        if (changed._data) {
+          const item = props._data;
+          this._dataToDom({
+            header: {attributes: {hidden: Boolean(item.content)}},
+            title: {textContent: item.title, href: item.url || ''},
+            domain: {textContent: item.domain ? `(${item.domain})` : ''},
+            content: {innerHTML: item.content || '', attributes: {hidden: !(item.content)}},
+            points: {textContent: item.points},
+            user: {textContent: item.user, href: `/user/${item.user}`},
+            time: {textContent: item.time_ago},
+            count: {textContent: `${item.comments_count} comments`}
+          });
+          const comments = item.comments;
+          this._renderList(this.$.comments, comments, itemTemplate,
+            (n, d) => { return {item: {comment: d}}}
+          );
+        }
+      }
 
       _fetchItemData(itemId) {
         this.classList.add('hide');
         let url = `https://node-hnapi.herokuapp.com/item/${itemId}`;
         fetch(url).then((resp) => {
-          resp.json().then((json) => {
-            this.item = json;
+          resp.json().then((data) => {
+            this._data = data;
             this.classList.remove('hide');
           });
         });
       }
     }
-    customElements.define(HnItem.is, HnItem);
+
+    HnItem.prototype._createPropertyAccessor('_data');
+
+    customElements.define(ELEMENT_NAME, HnItem);
   })();
   </script>
 </dom-module>
