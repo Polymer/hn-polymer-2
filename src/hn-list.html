@@ -94,14 +94,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-repeat" items="[[articles]]" initial-count="10">
         <li>
           <div class="title"><a href="[[item.url]]">[[item.title]]</a> <span class="domain">([[item.domain]])</span></div>
-          <div class="info">[[item.points]] points by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] <span class="spacer">|</span> <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
+          <div class="info">[[item.points]] points by <a href="/user/[[item.user]]" >[[item.user]]</a> [[item.time_ago]] <span class="spacer">|</span> <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
         </li>
       </template>
     </ul>
     <div class="forwardback">
-      <a class="prev" href="/[[listName]]/[[_computePrevPage(listPage)]]">◀ Previous</a>
+      <a class="prev" href="/[[listName]]/[[_computePrevPage(listPage)]]" title"Previous Page">◀ Previous</a>
       <span>Page [[listPage]]</span>
-      <a class="next" href="/[[listName]]/[[_computeNextPage(listPage)]]">Next ▶</a>
+      <a class="next" href="/[[listName]]/[[_computeNextPage(listPage)]]" title="Next Page">Next ▶</a>
     </div>
   </template>
   <script>

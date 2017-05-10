@@ -40,18 +40,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 8px 0;
       }
     </style>
-    <div class="container">
-      <div class="left">
-        <div>User:</div>
-        <div>Created:</div>
-        <div>Karma:</div>
-      </div>
-      <div class="right">
-        <div>[[user.id]]</div>
-        <div>[[user.created]]</div>
-        <div>[[user.karma]]</div>
-      </div>
-    </div>
+    <table>
+      <tr>
+        <td>User:</td>
+        <td>[[user.id]]</td>
+      </tr>
+      <tr>
+        <td>Created:</td>
+        <td>[[user.created]]</td>
+      </tr>
+      <tr>
+        <td>Karma:</td>
+        <td>[[user.karma]]</td>
+      </tr>
+    </table>
     <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
     <div class="links">
       <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>

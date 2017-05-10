@@ -50,7 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div class="header">
-      <a class="toggle" on-click="toggleCollapse">[[_collapseString]]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
+      <a class="toggle" on-click="toggleCollapse" aria-label$="[[_collapseTitle]]">[[_collapseString]]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
     </div>
     <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <div class="comments" hidden$="[[collapsed]]">
@@ -70,6 +70,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super();
         this.collapsed = false;
         this._collapseString = '[-]';
+        this._collapseTitle = 'Hide comments';
         this._commentThreadSize = 0;
       }
 
@@ -89,6 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
         }
         this._collapseString = this.collapsed ? `[+${this._commentThreadSize}]` : '[–]';
+        this._collapseTitle = `${this.collapsed ? 'Show' : 'Hide'} ${this._commentThreadSize} comments`;
       }
 
     }
