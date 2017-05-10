@@ -72,7 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _fetchUserData(userName) {
         this.classList.add('hide');
-        let url = `https://node-hnapi.herokuapp.com/user/${userName}`;
+        let url = `${window.HnApp.path}/user/${userName}`;
         fetch(url).then((resp) => {
           resp.json().then((json) => {
             this.user = json;

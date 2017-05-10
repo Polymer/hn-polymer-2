@@ -115,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _fetchListData(listType, page) {
         this.classList.add('hide');
-        let url = `https://node-hnapi.herokuapp.com/${listType}`;
+        let url = `${window.HnApp.path}/${listType}`;
         if (page) {
           url += `?page=${page}`;
         }

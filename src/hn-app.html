@@ -54,7 +54,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
 
     // Minimal fetch polyfill
-    window.fetch = window.fetch || (url => {
+    // Avoid using real `fetch` due to
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=652228
+    window.fetch = (url => {
       return new Promise((resolve, reject) => {
         var request = new XMLHttpRequest();
         request.onerror = reject;
@@ -122,6 +124,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     }
 
+    HnApp.path = '/hn';
+    //HnApp.path = 'https://node-hnapi.herokuapp.com';
+
+    window.HnApp = HnApp;
     window.customElements.define(HnApp.is, HnApp);
   })();
   </script>
