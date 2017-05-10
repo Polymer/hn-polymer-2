@@ -19,7 +19,7 @@ module.exports = {
   ],
   runtimeCaching: [
     {
-      urlPattern: /^https:\/\/node-hnapi\.herokuapp\.com\/(news|newest|ask|show|jobs)/,
+      urlPattern: /\/hn\/(news|newest|ask|show|jobs)/,
       handler: 'fastest',
       options: {
         cache: {
@@ -28,7 +28,7 @@ module.exports = {
         }
       }
     }, {
-      urlPattern: /^https:\/\/node-hnapi\.herokuapp\.com\/item\//,
+      urlPattern: /\/hn\/item\//,
       handler: 'fastest',
       options: {
         cache: {
@@ -37,7 +37,7 @@ module.exports = {
         }
       }
     }, {
-      urlPattern: /^https:\/\/node-hnapi\.herokuapp\.com\/user\//,
+      urlPattern: /\/hn\/user\//,
       handler: 'fastest',
       options: {
         cache: {
