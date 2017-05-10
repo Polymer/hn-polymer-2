@@ -1,6 +1,12 @@
 {
   "entrypoint": "index.html",
   "shell": "src/hn-app.html",
+  "fragments": [
+    "src/hn-list.html",
+    "src/hn-item.html",
+    "src/hn-user.html",
+    "src/hn-404.html"
+  ],
   "sources": [
     "src/**/*",
     "images/**/*",
@@ -27,7 +33,6 @@
     "css": {"minify": true},
     "html": {"minify": true},
     "addServiceWorker": true,
-    "addPushManifest": true,
-    "insertPrefetchLinks": true
+    "addPushManifest": true
   }]
 }

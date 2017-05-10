@@ -17,7 +17,7 @@
     "headers": [
       {
         "source": "/",
-        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
+        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
       },
       {
         "source": "**/(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
