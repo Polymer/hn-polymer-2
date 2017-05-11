@@ -16,12 +16,24 @@
     ],
     "headers": [
       {
+        "source": "/item/*",
+        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-item.html>;rel=preload;as=document"}]
+      },
+      {
+        "source": "/user/*",
+        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-user.html>;rel=preload;as=document"}]
+      },
+      {
         "source": "/",
         "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
       },
       {
-        "source": "**/(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
-        "headers": [{"key": "Cache-Control", "value": "public, max-age=36000, s-maxage=600, stale-while-revalidate=3600"}]
+        "source": "/top/**",
+        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
+      },
+      {
+        "source": "/?(new|ask|show|jobs)/**",
+        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document"}]
       }
     ]
   }
