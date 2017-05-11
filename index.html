@@ -85,11 +85,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         fill: white;
         border: 2px solid white;
       }
+
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0; }
+        50% { transform: scale(1.2); opacity: 1; }
+      }
+
+      .loading {
+        animation: pulse 1s infinite ease-in-out;
+        will-change: opacity, transform;
+        padding: 64px;
+        opacity: 0;
+        text-align: center;
+        color: #666;
+      }
     </style>
   </head>
   <body>
     <hn-app>
-      <nav>
+      <nav slot="nav">
         <a href="https://www.polymer-project.org" target="_blank" rel="noopener" title="Polymer Logo">
           <svg class="logo" viewBox="0 0 24 24">
             <path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"/>
@@ -101,6 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <a href="/show/1">Show</a>
         <a href="/jobs/1">Jobs</a>
       </nav>
+      <div class="loading">• • •</div>
     </hn-app>
     <!-- Load and register pre-caching Service Worker -->
     <script>
