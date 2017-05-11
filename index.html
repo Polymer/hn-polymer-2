@@ -59,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 0;
       }
 
-      header {
+      nav {
         background-color: #283593;
         height: 55px;
         padding: 15px 1em;
@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         white-space: nowrap;
       }
 
-      header > nav > a {
+      nav > a {
         color: white;
         line-height: 24px;
         display: inline-block;
@@ -88,21 +88,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
   </head>
   <body>
-    <hn-app role="region">
-      <header>
-        <nav>
-          <a href="https://www.polymer-project.org" target="_blank" rel="noopener" title="Polymer Logo">
-            <svg class="logo" viewBox="0 0 24 24">
-              <path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"/>
-            </svg>
-          </a>
-          <a href="/top/1" accesskey="t">Top</a>
-          <a href="/new/1" accesskey="n">New</a>
-          <a href="/ask/1" accesskey="a">Ask</a>
-          <a href="/show/1" accesskey="s">Show</a>
-          <a href="/jobs/1" accesskey="j">Jobs</a>
-        </nav>
-      </header>
+    <hn-app>
+      <nav>
+        <a href="https://www.polymer-project.org" target="_blank" rel="noopener" title="Polymer Logo">
+          <svg class="logo" viewBox="0 0 24 24">
+            <path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"/>
+          </svg>
+        </a>
+        <a href="/top/1">Top</a>
+        <a href="/new/1">New</a>
+        <a href="/ask/1">Ask</a>
+        <a href="/show/1">Show</a>
+        <a href="/jobs/1">Jobs</a>
+      </nav>
     </hn-app>
     <!-- Load and register pre-caching Service Worker -->
     <script>
