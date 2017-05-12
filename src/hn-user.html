@@ -18,10 +18,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: var(--detail-font-size);
       }
 
-      :host(.hide) {
-        visibility: hidden;
-      }
-
       a {
         color: #000;
         cursor: pointer;
@@ -55,23 +51,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
     class HnUser extends Polymer.Element {
       static get is() { return 'hn-user'; }
-      static get observers() {
-        return ['_fetchUserData(userName)'];
-      }
 
-      _hnLink(type, userName) {
-        return `https://news.ycombinator.com/${type}?id=${userName}`;
-      }
-
-      _fetchUserData(userName) {
-        this.classList.add('hide');
-        let url = `${window.HnApp.path}/user/${userName}`;
-        fetch(url).then((resp) => {
-          resp.json().then((json) => {
-            this.user = json;
-            this.classList.remove('hide');
-          });
-        });
+      _hnLink(type, id) {
+        return `https://news.ycombinator.com/${type}?id=${id}`;
       }
     }
 

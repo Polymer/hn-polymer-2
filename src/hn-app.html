@@ -38,10 +38,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <simple-router path="{{path}}"></simple-router>
 
     <div id="views">
-      <hn-list class$="[[_computeViewClass('list', view)]]" list-type="[[listType]]" list-page="[[listPage]]" list-name="[[listName]]"></hn-list>
-      <hn-item class$="[[_computeViewClass('item', view)]]" item-id="[[itemId]]"></hn-item>
-      <hn-user class$="[[_computeViewClass('user', view)]]" user-name="[[userName]]"></hn-user>
-      <hn-404 class$="[[_computeViewClass('404', view)]]"></hn-404>
+      <hn-list class$="[[_viewClass('list', _view, _loading)]]" list="[[_listData]]" type="[[_listType]]" page="[[_listPage]]"></hn-list>
+      <hn-item class$="[[_viewClass('item', _view, _loading)]]" item="[[_itemData]]"></hn-item>
+      <hn-user class$="[[_viewClass('user', _view, _loading)]]" user="[[_userData]]"></hn-user>
+      <hn-404 class$="[[_viewClass('404', _view, _loading)]]"></hn-404>
+      <hn-offline class$="[[_viewClass('offline', _view, _loading)]]" on-refresh="_refreshRoute"></hn-offline>
+    </div>
+
+    <div class="loading" hidden$="[[!_loading]]">
+      <slot name="load"></slot>
     </div>
   </template>
 
@@ -69,6 +74,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       new: 'newest'
     }
 
+    const hnPath = '/hn';
+    // const hnPath = 'https://node-hnapi.herokuapp.com';
+
     class HnApp extends Polymer.Element {
 
       static get is() { return 'hn-app'; }
@@ -76,8 +84,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get observers() {
         return [
           '_routeChanged(path)',
-          '_viewChanged(view)'
+          '_fetchList(_listPath, _listPage)',
+          '_fetchItem(_itemId)',
+          '_fetchUser(_userName)',
+          '_viewChanged(_view)'
         ];
+      }
+
+      _refreshRoute() {
+        if (this._pendingFetch) {
+          const {url, callback, view} = this._pendingFetch;
+          this._view = view;
+          this._fetch(url, callback);
+        }
       }
 
       _routeChanged(path) {
@@ -89,18 +108,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         switch(page) {
           case 'item':
             if (detail) {
-              props.view = 'item';
-              props.itemId = detail;
+              props._view = 'item';
+              props._itemId = detail;
             } else {
-              props.view = '404';
+              props._view = '404';
             }
             break;
           case 'user':
             if (detail) {
-              props.view = 'user';
-              props.userName = detail;
+              props._view = 'user';
+              props._userName = detail;
             } else {
-              props.view = '404';
+              props._view = '404';
             }
             break;
           case 'top':
@@ -108,35 +127,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'ask':
           case 'show':
           case 'jobs':
-            props.listName = page;
-            props.listType = pageToListType[page] || page;
-            props.view = 'list';
-            props.listPage = detail || 1;
+            props._view = 'list';
+            props._listType = page;
+            props._listPage = detail || 1;
+            props._listPath = pageToListType[page] || page;
             break;
           default:
-            props.view = '404';
+            props._view = '404';
             break;
         }
         this.setProperties(props);
         document.body.scrollTop = 0;
       }
 
+      _fetchList(path, page) {
+        let url = `${hnPath}/${path}`;
+        if (page) {
+          url += `?page=${page}`;
+        }
+        this._fetch(url, (data) => this._listData = data);
+      }
+
+      _fetchItem(id) {
+        this._fetch(`${hnPath}/item/${id}`, (data) => this._itemData = data);
+      }
+
+      _fetchUser(user) {
+        this._fetch(`${hnPath}/user/${user}`, (data) => this._userData = data);
+      }
+
+      _fetch(url, callback) {
+        this._pendingFetch = {url, callback, view: this._view};
+        this._loading = true;
+        fetch(url).then(response => {
+          response.json().then(data => {
+            this._pendingFetch = null;
+            callback(data);
+            this._loading = false;
+          });
+        }, reject => {
+          if (!navigator.onLine) {
+            this._view = 'offline';
+          }
+          this._loading = false;
+        });
+      }
+
       _viewChanged(view) {
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('hn-' + view + '.html');
-        Polymer.importHref(resolvedPageUrl, null, ()=>this.view='404', true);
+        Polymer.importHref(resolvedPageUrl, null, ()=>this._view='404', true);
       }
 
-      _computeViewClass(name, view) {
-        return name == view ? 'selectedView' : '';
+      _viewClass(name, view, loading) {
+        return name == view && !loading ? 'selectedView' : '';
       }
 
     }
 
-    HnApp.path = '/hn';
-    // HnApp.path = 'https://node-hnapi.herokuapp.com';
-
-    window.HnApp = HnApp;
     window.customElements.define(HnApp.is, HnApp);
   })();
   </script>

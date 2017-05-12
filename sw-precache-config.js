@@ -9,6 +9,8 @@
  */
 
 /* eslint-env node */
+const path = '/hn';
+// const path = 'https://node-hnapi.herokuapp.com';
 
 module.exports = {
   staticFileGlobs: [
@@ -19,7 +21,7 @@ module.exports = {
   ],
   runtimeCaching: [
     {
-      urlPattern: /\/hn\/(news|newest|ask|show|jobs)/,
+      urlPattern: new RegExp(`${path}/(news|newest|ask|show|jobs)`),
       handler: 'fastest',
       options: {
         cache: {
@@ -28,7 +30,7 @@ module.exports = {
         }
       }
     }, {
-      urlPattern: /\/hn\/item\//,
+      urlPattern: new RegExp(`${path}/item/`),
       handler: 'fastest',
       options: {
         cache: {
@@ -37,7 +39,7 @@ module.exports = {
         }
       }
     }, {
-      urlPattern: /\/hn\/user\//,
+      urlPattern: new RegExp(`${path}/user/`),
       handler: 'fastest',
       options: {
         cache: {

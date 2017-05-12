@@ -5,6 +5,7 @@
     "src/hn-list.html",
     "src/hn-item.html",
     "src/hn-user.html",
+    "src/hn-offline.html",
     "src/hn-404.html"
   ],
   "sources": [

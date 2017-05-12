@@ -115,8 +115,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <a href="/jobs/1">Jobs</a>
     </nav>
     <hn-app role="main">
-      <div class="loading">• • •</div>
+      <div slot="load" class="loading">• • •</div>
     </hn-app>
+    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+    <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <!-- Load your application shell -->
+    <link rel="import" href="/src/hn-app.html">
+
     <!-- Load and register pre-caching Service Worker -->
     <script>
       if ('serviceWorker' in navigator) {
@@ -125,11 +131,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
     </script>
-
-    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-    <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-
-    <!-- Load your application shell -->
-    <link rel="import" href="/src/hn-app.html">
   </body>
 </html>

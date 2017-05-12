@@ -18,10 +18,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
 
-      :host(.hide) {
-        visibility: hidden;
-      }
-
       ul {
         list-style-type: none;
         padding: 0;
@@ -90,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <ul>
-      <template is="dom-repeat" items="[[articles]]" initial-count="10">
+      <template is="dom-repeat" items="[[list]]" initial-count="10">
         <li>
           <div class="title"><a href="[[item.url]]">[[item.title]]</a> <span class="domain">([[item.domain]])</span></div>
           <div class="info">[[item.points]] points by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] <span class="spacer">|</span> <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
@@ -98,39 +94,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </ul>
     <div class="forwardback">
-      <a class="prev" href="/[[listName]]/[[_computePrevPage(listPage)]]" aria-label="Previous Page">◀ Previous</a>
-      <span>Page [[listPage]]</span>
-      <a class="next" href="/[[listName]]/[[_computeNextPage(listPage)]]" aria-label="Next Page">Next ▶</a>
+      <a class="prev" href="/[[type]]/[[_computePrevPage(page)]]" aria-label="Previous Page">◀ Previous</a>
+      <span>Page [[page]]</span>
+      <a class="next" href="/[[type]]/[[_computeNextPage(page)]]" aria-label="Next Page">Next ▶</a>
     </div>
   </template>
   <script>
   (function() {
     class HnList extends Polymer.Element {
       static get is() { return 'hn-list'; }
-
-      static get observers() {
-        return ['_fetchListData(listType, listPage)']
-      }
-
-      _fetchListData(listType, page) {
-        this.classList.add('hide');
-        let url = `${window.HnApp.path}/${listType}`;
-        if (page) {
-          url += `?page=${page}`;
-        }
-        if (window.dataCache && window.dataCache[url]) {
-          this._listResponse(window.dataCache[url]);
-        } else {
-          fetch(url).then(resp => {
-            resp.json().then(json => this._listResponse(json));
-          });
-        }
-      }
-
-      _listResponse(json) {
-        this.articles = json;
-        this.classList.remove('hide');
-      }
 
       _computeNextPage(page) {
         return parseInt(page || 1) + 1;

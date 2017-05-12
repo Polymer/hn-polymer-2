@@ -21,10 +21,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: .75rem;
       }
 
-      :host(.hide) {
-        visibility: hidden;
-      }
-
       a {
         color: #000;
         cursor: pointer;
@@ -82,19 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
     class HnItem extends Polymer.Element {
       static get is() { return 'hn-item'; }
-
-      static get observers() { return ['_fetchItemData(itemId)']; }
-
-      _fetchItemData(itemId) {
-        this.classList.add('hide');
-        let url = `${window.HnApp.path}/item/${itemId}`;
-        fetch(url).then((resp) => {
-          resp.json().then((json) => {
-            this.item = json;
-            this.classList.remove('hide');
-          });
-        });
-      }
     }
     customElements.define(HnItem.is, HnItem);
   })();
