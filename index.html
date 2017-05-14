@@ -47,10 +47,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
     <style>
-      html {
-        margin: 0;
-        padding: 0;
-      }
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
         min-height: 100vh;
@@ -61,15 +57,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       nav {
         background-color: #283593;
-        height: 55px;
-        padding: 15px 1em;
+        height: 54px;
+        padding: 16px 1em;
         box-sizing: border-box;
         white-space: nowrap;
       }
 
       nav > a {
         color: white;
-        line-height: 24px;
         display: inline-block;
         vertical-align: middle;
         font-weight: 300;
@@ -83,7 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 24px;
         vertical-align: middle;
         fill: white;
-        border: 2px solid white;
       }
 
       @keyframes pulse {
@@ -92,12 +86,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .loading {
+        text-align: center;
+      }
+
+      .loading > * {
         animation: pulse 1s infinite ease-in-out;
         will-change: opacity, transform;
+        display: inline-block;
         padding: 64px;
-        opacity: 0;
-        text-align: center;
-        color: #666;
       }
     </style>
   </head>
@@ -115,8 +111,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <a href="/jobs/1">Jobs</a>
     </nav>
     <hn-app role="main">
-      <div slot="load" class="loading">• • •</div>
+      <div slot="load" class="loading">
+        <div>• • •</div>
+      </div>
     </hn-app>
+
     <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 

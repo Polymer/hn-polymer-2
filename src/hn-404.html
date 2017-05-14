@@ -15,23 +15,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-
         padding: 10px 20px;
+        text-align: center;
+        color: var(--detail-font-color);
+        font-size: var(--detail-font-size);
+      }
+
+      a {
+        text-decoration: none;
+        display: inline-block;
+        color: var(--detail-font-color);
+        border: 2px solid var(--detail-font-color);
+        padding: 8px;
+        margin: 16px;
       }
     </style>
-
-    <!--
-      If deploying in a folder replace href="/" with the full path to your site.
-      Such as: href=="http://polymerelements.github.io/polymer-starter-kit"
-    -->
-    Oops you hit a 404. <a href="/">Head back to home.</a>
+    <div>Oops you hit a 404.</div>
+    <a href="/">Head back to home...</a>
   </template>
 
   <script>
+  (function() {
+
     class Hn404 extends Polymer.Element {
+
       static get is() { return 'hn-404'; }
     }
 
     window.customElements.define(Hn404.is, Hn404);
+
+  })();
   </script>
 </dom-module>

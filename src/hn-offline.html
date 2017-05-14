@@ -17,21 +17,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px 20px;
         text-align: center;
-        margin: auto;
         color: var(--detail-font-color);
         font-size: var(--detail-font-size);
       }
 
-      button {
+      a {
+        display: inline-block;
         color: var(--detail-font-color);
         border: 2px solid var(--detail-font-color);
-        background: transparent;
         padding: 8px;
         margin: 16px;
       }
     </style>
     <div>Yo, you are offline and this resource is unavailable.</div>
-    <button on-click="_requestRefresh">Try Again...</button>
+    <a on-click="_requestRefresh">Try Again...</a>
   </template>
 
   <script>

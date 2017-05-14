@@ -10,7 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="hn-comment.html">
 
 <dom-module id="hn-item">
@@ -18,57 +17,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        font-size: .75rem;
+        font-size: var(--detail-font-size);
       }
 
       a {
-        color: #000;
-        cursor: pointer;
+        color: currentColor;
+      }
+
+      .title, .domain {
+        font-size: 1rem;
       }
 
       .title {
-        display: inline-block;
         text-decoration: none;
       }
 
       .domain {
         padding-left: 4px;
-        color: #666;
+        color: var(--detail-font-color);
       }
 
       .spacer {
         padding: 0 .5em;
       }
 
-      .container {
-        font-size: 1rem;
-      }
-
       .meta {
-        color: #666;
         padding: 8px 0 16px 0;
-        border-bottom: 1px solid #eee;
+        color: var(--detail-font-color);
+        border-bottom: var(--separator-border);
       }
 
       .user {
-        color: #666;
+        color: var(--detail-font-color);
       }
     </style>
-    <template is="dom-if" if="[[!item.content]]">
-      <div class="container">
-        <a class="link title" href$="[[item.url]]">[[item.title]]</a>
-        <span class="domain">([[item.domain]])</span>
-      </div>
-    </template>
-    <template is="dom-if" if="[[item.content]]">
-      <div class="title container">[[item.title]]</div>
-      <div inner-h-t-m-l="[[item.content]]"></div>
-    </template>
+
+    <a class="title" href$="[[item.url]]">[[item.title]]</a>
+    <span class="domain" hidden="[[!item.domain]]">([[item.domain]])</span>
+    <div inner-h-t-m-l="[[item.content]]"></div>
     <div class="meta">
-      [[item.points]] points by <a class="user" href$="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]]
+      [[item.points]] points by
+      <a class="user" href$="/user/[[item.user]]">[[item.user]]</a>
+      [[item.time_ago]]
       <span class="spacer">|</span>
       <span>[[item.comments_count]] comments</span>
     </div>
+
     <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
       <hn-comment comment=[[item]]></hn-comment>
     </template>
@@ -76,10 +70,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   (function() {
+
     class HnItem extends Polymer.Element {
+
       static get is() { return 'hn-item'; }
+
     }
+
     customElements.define(HnItem.is, HnItem);
+
   })();
   </script>
 </dom-module>

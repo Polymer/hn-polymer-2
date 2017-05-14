@@ -18,15 +18,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
 
+      a {
+        color: currentColor;
+      }
+
       ul {
         list-style-type: none;
         padding: 0;
         margin: 0;
-      }
-
-      a {
-        pointer: cursor;
-        color: black;
       }
 
       li:first-of-type {
@@ -72,36 +71,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-decoration: none;
       }
 
-      .forwardback > a:hover {
-        text-decoration: underline;
-      }
-
       .forwardback > span {
         flex: 1;
         text-align: center;
-      }
-
-      .next {
-        padding-left: 3ex;
       }
     </style>
     <ul>
       <template is="dom-repeat" items="[[list]]" initial-count="10">
         <li>
-          <div class="title"><a href="[[item.url]]">[[item.title]]</a> <span class="domain">([[item.domain]])</span></div>
-          <div class="info">[[item.points]] points by <a href="/user/[[item.user]]">[[item.user]]</a> [[item.time_ago]] <span class="spacer">|</span> <a href="/item/[[item.id]]">[[item.comments_count]] comments</a></div>
+          <div class="title">
+            <a href="[[item.url]]">[[item.title]]</a>
+            <span class="domain">([[item.domain]])</span>
+          </div>
+          <div class="info">
+            [[item.points]] points by
+            <a href="/user/[[item.user]]">[[item.user]]</a>
+            [[item.time_ago]]
+            <span class="spacer">|</span>
+            <a href="/item/[[item.id]]">[[item.comments_count]] comments</a>
+          </div>
         </li>
       </template>
     </ul>
+
     <div class="forwardback">
       <a class="prev" href="/[[type]]/[[_computePrevPage(page)]]" aria-label="Previous Page">◀ Previous</a>
       <span>Page [[page]]</span>
       <a class="next" href="/[[type]]/[[_computeNextPage(page)]]" aria-label="Next Page">Next ▶</a>
     </div>
+
   </template>
   <script>
   (function() {
+
     class HnList extends Polymer.Element {
+
       static get is() { return 'hn-list'; }
 
       _computeNextPage(page) {
@@ -114,6 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     window.customElements.define(HnList.is, HnList);
+
   })();
   </script>
 </dom-module>

@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/lib/utils/import-href.html">
 <link rel="import" href="simple-router.html">
+<script src="fetch.js"></script>
 
 <dom-module id="hn-app">
   <template strip-whitespace>
@@ -20,62 +21,72 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         box-sizing: border-box;
         min-height: 100vh;
         background-color: white;
-        --detail-font-size: 0.75rem;
-        --detail-font-color: #666;
-        --separator-border: 1px solid #eee;
         box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14),
               0 1px 10px 0 rgba(0, 0, 0, 0.12),
               0 2px 4px -1px rgba(0, 0, 0, 0.4);
+        --detail-font-size: 0.75rem;
+        --detail-font-color: #666;
+        --separator-border: 1px solid #eee;
       }
+
       #views > :not(.selectedView) {
         display: none !important;
       }
+
       #views > * {
         padding: 2rem;
+      }
+
+      .loading {
+        color: var(--detail-font-color);
       }
     </style>
 
     <simple-router path="{{path}}"></simple-router>
 
     <div id="views">
-      <hn-list class$="[[_viewClass('list', _view, _loading)]]" list="[[_listData]]" type="[[_listType]]" page="[[_listPage]]"></hn-list>
-      <hn-item class$="[[_viewClass('item', _view, _loading)]]" item="[[_itemData]]"></hn-item>
-      <hn-user class$="[[_viewClass('user', _view, _loading)]]" user="[[_userData]]"></hn-user>
-      <hn-404 class$="[[_viewClass('404', _view, _loading)]]"></hn-404>
-      <hn-offline class$="[[_viewClass('offline', _view, _loading)]]" on-refresh="_refreshRoute"></hn-offline>
+      <hn-list
+        class$="[[_viewClass('list', _view, _loading)]]"
+        list="[[_listData]]"
+        type="[[_listType]]"
+        page="[[_listPage]]">
+      </hn-list>
+      <hn-item
+        class$="[[_viewClass('item', _view, _loading)]]"
+        item="[[_itemData]]">
+      </hn-item>
+      <hn-user
+        class$="[[_viewClass('user', _view, _loading)]]"
+        user="[[_userData]]">
+      </hn-user>
+      <hn-404
+        class$="[[_viewClass('404', _view, _loading)]]">
+      </hn-404>
+      <hn-offline
+        class$="[[_viewClass('offline', _view, _loading)]]"
+        on-refresh="_refreshRoute">
+      </hn-offline>
     </div>
 
     <div class="loading" hidden$="[[!_loading]]">
       <slot name="load"></slot>
     </div>
+
   </template>
 
   <script>
   (function() {
 
-    // Minimal fetch polyfill
-    // Avoid using real `fetch` due to
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=652228
-    window.fetch = (url => {
-      return new Promise((resolve, reject) => {
-        var request = new XMLHttpRequest();
-        request.onerror = reject;
-        request.onload = () => resolve({
-          json: () => Promise.resolve(request.responseText).then(JSON.parse),
-        });
-        request.open('get', url);
-        request.send();
-      })
-    });
+    // base fetch url
+    // url for server proxy to api, when running locally switch url's
+    // const fetchBaseUrl = '/hn';
+    const fetchBaseUrl = 'https://node-hnapi.herokuapp.com';
 
     // custom list-type for route page
     const pageToListType = {
       top: 'news',
       new: 'newest'
     }
-
-    const hnPath = '/hn';
-    // const hnPath = 'https://node-hnapi.herokuapp.com';
 
     class HnApp extends Polymer.Element {
 
@@ -89,14 +100,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           '_fetchUser(_userName)',
           '_viewChanged(_view)'
         ];
-      }
-
-      _refreshRoute() {
-        if (this._pendingFetch) {
-          const {url, callback, view} = this._pendingFetch;
-          this._view = view;
-          this._fetch(url, callback);
-        }
       }
 
       _routeChanged(path) {
@@ -137,11 +140,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             break;
         }
         this.setProperties(props);
-        document.body.scrollTop = 0;
+      }
+
+      // called when coming back online...
+      _refreshRoute() {
+        if (this._pendingFetch) {
+          const {url, callback, view} = this._pendingFetch;
+          this._view = view;
+          this._fetch(url, callback);
+        }
       }
 
       _fetchList(path, page) {
-        let url = `${hnPath}/${path}`;
+        let url = `${fetchBaseUrl}/${path}`;
         if (page) {
           url += `?page=${page}`;
         }
@@ -149,16 +160,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _fetchItem(id) {
-        this._fetch(`${hnPath}/item/${id}`, (data) => this._itemData = data);
+        this._fetch(`${fetchBaseUrl}/item/${id}`, (data) => this._itemData = data);
       }
 
       _fetchUser(user) {
-        this._fetch(`${hnPath}/user/${user}`, (data) => this._userData = data);
+        this._fetch(`${fetchBaseUrl}/user/${user}`, (data) => this._userData = data);
       }
 
       _fetch(url, callback) {
-        this._pendingFetch = {url, callback, view: this._view};
+        document.body.scrollTop = 0;
         this._loading = true;
+        this._pendingFetch = {url, callback, view: this._view};
         fetch(url).then(response => {
           response.json().then(data => {
             this._pendingFetch = null;
@@ -186,6 +198,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     window.customElements.define(HnApp.is, HnApp);
+
   })();
   </script>
 </dom-module>

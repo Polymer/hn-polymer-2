@@ -19,8 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       a {
-        color: #000;
-        cursor: pointer;
+        color: currentColor;
       }
 
       .links {
@@ -41,15 +40,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <td>[[user.karma]]</td>
       </tr>
     </table>
+
     <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
     <div class="links">
-      <a href$="[[_hnLink('submitted', user.id)]]">submissions</a> | <a href$="[[_hnLink('threads', user.id)]]">comments</a> | <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
+      <a href$="[[_hnLink('submitted', user.id)]]">submissions</a>
+      |
+      <a href$="[[_hnLink('threads', user.id)]]">comments</a>
+      |
+      <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
     </div>
   </template>
 
   <script>
   (function() {
+
     class HnUser extends Polymer.Element {
+
       static get is() { return 'hn-user'; }
 
       _hnLink(type, id) {
@@ -58,6 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     window.customElements.define(HnUser.is, HnUser);
+
   })();
   </script>
 </dom-module>

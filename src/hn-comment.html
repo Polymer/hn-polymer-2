@@ -16,22 +16,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+
       a {
-        color: #000;
-        cursor: pointer;
-      }
-
-      .comment {
-        border-bottom: var(--separator-border);
-      }
-
-      .comments {
-        padding-left: 8px;
-      }
-
-      .toggle {
-        cursor: pointer;
-        user-select: none;
+        color: currentColor;
       }
 
       .header {
@@ -42,15 +29,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-right: .25rem;
         color: var(--detail-font-color);
       }
+
+      .toggle {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .comment {
+        border-bottom: var(--separator-border);
+      }
+
       .comment > p {
         overflow-wrap: break-word;
       }
+
       .comment > p:first-of-type {
         margin-top: 0;
       }
+
+      .comments {
+        padding-left: 8px;
+      }
     </style>
     <div class="header">
-      <a class="toggle" on-click="toggleCollapse" aria-label$="[[_collapseTitle]]">[[_collapseString]]</a><a class="user" href$="/user/[[comment.user]]">[[comment.user]]</a><a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
+      <a class="toggle" on-click="_toggleCollapse" aria-label$="[[_collapseTitle]]">[[_collapseString]]</a>
+      <a href$="/user/[[comment.user]]">[[comment.user]]</a>
+      <a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
     </div>
     <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
     <div class="comments" hidden$="[[collapsed]]">
@@ -69,12 +73,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       constructor() {
         super();
         this.collapsed = false;
-        this._collapseString = '[-]';
+        this._collapseString = '[–]';
         this._collapseTitle = 'Hide comments';
         this._commentThreadSize = 0;
       }
 
-      _calculateCommentThreadSize(comment) {
+      _calculateThreadSize(comment) {
         let threadSize = 0;
         let flat = (comment) => {
           threadSize++;
@@ -84,10 +88,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return threadSize;
       }
 
-      toggleCollapse() {
+      _toggleCollapse() {
         this.collapsed = !this.collapsed;
         if (!this._commentThreadSize) {
-          this._commentThreadSize = this._calculateCommentThreadSize(this.comment);
+          this._commentThreadSize = this._calculateThreadSize(this.comment);
         }
         this._collapseString = this.collapsed ? `[+${this._commentThreadSize}]` : '[–]';
         this._collapseTitle = `${this.collapsed ? 'Show' : 'Hide'} ${this._commentThreadSize} comments`;
