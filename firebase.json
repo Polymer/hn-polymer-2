@@ -36,7 +36,7 @@
         "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document"}]
       },
       {
-        "source": "**/*.@(js|html|png)",
+        "source": "**/*.@(js|html|png|json|ico)",
         "headers":[
           {"key": "Cache-Control", "value": "public, max-age=36000, stale-while-revalidate=86400"}
         ]
