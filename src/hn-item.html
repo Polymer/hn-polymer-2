@@ -52,9 +52,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <a class="title" href$="[[item.url]]">[[item.title]]</a>
+    <a class="title" href$="[[item.url]]" hidden="[[item.content]]">[[item.title]]</a>
+    <div class="title" hidden="[[!item.content]]">[[item.title]]</div>
     <span class="domain" hidden="[[!item.domain]]">([[item.domain]])</span>
-    <div inner-h-t-m-l="[[item.content]]"></div>
+    <div hidden="[[!item.content]]" inner-h-t-m-l="[[item.content]]"></div>
     <div class="meta">
       [[item.points]] points by
       <a class="user" href$="/user/[[item.user]]">[[item.user]]</a>

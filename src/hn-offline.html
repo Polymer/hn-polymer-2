@@ -21,17 +21,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: var(--detail-font-size);
       }
 
-      a {
+      button {
         cursor: pointer;
-        display: inline-block;
         color: var(--detail-font-color);
         border: 2px solid var(--detail-font-color);
         padding: 8px;
         margin: 16px;
+        background-color: transparent;
       }
     </style>
     <div>Yo, you are offline and this resource is unavailable.</div>
-    <a on-click="_requestRefresh">Try Again...</a>
+    <button on-click="_requestRefresh">Try Again...</button>
   </template>
 
   <script>

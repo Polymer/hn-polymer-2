@@ -31,8 +31,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .toggle {
-        cursor: pointer;
         user-select: none;
+        background-color: transparent;
+        border: none;
+        padding: 0;
       }
 
       .comment {
@@ -52,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div class="header">
-      <a class="toggle" on-click="_toggleCollapse" aria-label$="[[_collapseTitle]]">[[_collapseString]]</a>
+      <button class="toggle" on-click="_toggleCollapse" aria-label$="[[_collapseTitle]]">[[_collapseString]]</button>
       <a href$="/user/[[comment.user]]">[[comment.user]]</a>
       <a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
     </div>

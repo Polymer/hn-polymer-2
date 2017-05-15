@@ -5,10 +5,10 @@
   ],
   "license": "https://polymer.github.io/LICENSE.txt",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0-rc.1"
+    "polymer": "Polymer/polymer#^2.0.0"
   },
   "devDependencies": {
-    "web-component-tester": "^6.0.0-prerelease.5"
+    "web-component-tester": "^6.0.0"
   },
   "private": true
 }
