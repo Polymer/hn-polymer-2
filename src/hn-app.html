@@ -42,8 +42,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <simple-router path="{{path}}"></simple-router>
-
+    <simple-router path="{{_path}}"></simple-router>
+    <slot></slot>
     <div id="views">
       <hn-list
         class$="[[_viewClass('list', _view, _loading)]]"
@@ -94,11 +94,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routeChanged(path)',
+          '_routeChanged(_path)',
           '_fetchList(_listPath, _listPage)',
           '_fetchItem(_itemId)',
           '_fetchUser(_userName)',
-          '_viewChanged(_view)'
+          '_viewChanged(_view)',
+          '_selectedClass(_view, _listType)'
         ];
       }
 
@@ -108,11 +109,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           page = 'top';
         }
         let props = {};
+        let pending = this._pendingFetch = {};
         switch(page) {
           case 'item':
             if (detail) {
               props._view = 'item';
-              props._itemId = detail;
+              pending._itemId = props._itemId = detail;
             } else {
               props._view = '404';
             }
@@ -120,7 +122,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'user':
             if (detail) {
               props._view = 'user';
-              props._userName = detail;
+              pending._userName = props._userName = detail;
             } else {
               props._view = '404';
             }
@@ -132,56 +134,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'jobs':
             props._view = 'list';
             props._listType = page;
-            props._listPage = detail || 1;
+            pending._listPage = props._listPage = detail || 1;
             props._listPath = pageToListType[page] || page;
             break;
           default:
             props._view = '404';
             break;
         }
+        pending._view = props._view;
         this.setProperties(props);
       }
 
       // called when coming back online...
       _refreshRoute() {
-        if (this._pendingFetch) {
-          const {url, callback, view} = this._pendingFetch;
-          this._view = view;
-          this._fetch(url, callback);
+        // refresh pending route path if in offline state.
+        if (this._view == 'offline' && this._pendingFetch) {
+          this.setProperties(this._pendingFetch);
         }
       }
 
       _fetchList(path, page) {
-        let url = `${fetchBaseUrl}/${path}`;
-        if (page) {
-          url += `?page=${page}`;
+        if (path) {
+          let url = `${fetchBaseUrl}/${path}`;
+          if (page) {
+            url += `?page=${page}`;
+          }
+          this._fetch(url)
+            .then(data => this._listData = data, () => this._listPage = null);
         }
-        this._fetch(url, (data) => this._listData = data);
       }
 
       _fetchItem(id) {
-        this._fetch(`${fetchBaseUrl}/item/${id}`, (data) => this._itemData = data);
+        if (id) {
+          this._fetch(`${fetchBaseUrl}/item/${id}`)
+            .then(data => this._itemData = data, (e) => this._itemId = null);
+        }
       }
 
       _fetchUser(user) {
-        this._fetch(`${fetchBaseUrl}/user/${user}`, (data) => this._userData = data);
+        if (user) {
+          this._fetch(`${fetchBaseUrl}/user/${user}`)
+            .then(data => this._userData = data, () => this._userName = null);
+        }
       }
 
-      _fetch(url, callback) {
+      _fetch(url) {
+        // scroll to top when fetching
         document.body.scrollTop = 0;
         this._loading = true;
-        this._pendingFetch = {url, callback, view: this._view};
-        fetch(url).then(response => {
-          response.json().then(data => {
+        return fetch(url).then(response => {
+          return response.json().then(data => {
             this._pendingFetch = null;
-            callback(data);
             this._loading = false;
+            return data;
           });
         }, reject => {
           if (!navigator.onLine) {
             this._view = 'offline';
           }
           this._loading = false;
+          return Promise.reject(reject);
         });
       }
 
@@ -193,6 +205,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _viewClass(name, view, loading) {
         return name == view && !loading ? 'selectedView' : '';
+      }
+
+      // indicate selected list/tab; here we throw a class on body
+      // to be able to coordinate with the nav bar which is in body.
+      _selectedClass(view, page) {
+        let root = document.body;
+        if (this._prevSelectedClass) {
+          root.classList.remove(this._prevSelectedClass);
+        }
+        if (view == 'list') {
+          this._prevSelectedClass = `hn-${page}`;
+          root.classList.add(this._prevSelectedClass);
+        }
       }
 
     }

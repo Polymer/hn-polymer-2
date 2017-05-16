@@ -58,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       nav {
         background-color: #283593;
         height: 54px;
-        padding: 16px 1em;
+        padding: 16px 0 16px 2em;
         box-sizing: border-box;
         white-space: nowrap;
       }
@@ -95,6 +95,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: inline-block;
         padding: 64px;
       }
+
+      .hn-top .top, .hn-new .new, .hn-ask .ask, .hn-show .show, .hn-jobs .jobs {
+        color: #f5d328;
+      }
     </style>
   </head>
   <body>
@@ -104,11 +108,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"/>
         </svg>
       </a>
-      <a href="/top/1">Top</a>
-      <a href="/new/1">New</a>
-      <a href="/ask/1">Ask</a>
-      <a href="/show/1">Show</a>
-      <a href="/jobs/1">Jobs</a>
+      <a class="top" href="/top/1">Top</a>
+      <a class="new" href="/new/1">New</a>
+      <a class="ask" href="/ask/1">Ask</a>
+      <a class="show" href="/show/1">Show</a>
+      <a class="jobs" href="/jobs/1">Jobs</a>
     </nav>
     <hn-app role="main">
       <div slot="load" class="loading">
