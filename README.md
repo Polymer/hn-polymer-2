@@ -1,97 +1,76 @@
-# Polymer App Toolbox - Starter Kit
+# Polymer Hacker News client
 
-[![Build Status](https://travis-ci.org/PolymerElements/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/PolymerElements/polymer-starter-kit)
+Very basic Hacker News [Progressive Web App](https://developers.google.com/web/progressive-web-apps/) client made with [Polymer 2](https://www.polymer-project.org).
 
-This template is a starting point for building apps using a drawer-based
-layout. The layout is provided by `app-layout` elements.
-
-This template, along with the `polymer-cli` toolchain, also demonstrates use
-of the "PRPL pattern" This pattern allows fast first delivery and interaction with
-the content at the initial route requested by the user, along with fast subsequent
-navigation by pre-caching the remaining components required by the app and
-progressively loading them on-demand as the user navigates through the app.
-
-The PRPL pattern, in a nutshell:
-
-* **Push** components required for the initial route
-* **Render** initial route ASAP
-* **Pre-cache** components for remaining routes
-* **Lazy-load** and progressively upgrade next routes on-demand
-
-### Migrating from Polymer Starter Kit v1?
-
-[Check out our blog post that covers what's changed in PSK2 and how to migrate!](https://www.polymer-project.org/1.0/blog/2016-08-18-polymer-starter-kit-or-polymer-cli.html)
-
-### Quickstart
-
-We've recorded a Polycast to get you up and running with PSK2 fast!
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=HgJ0XCyBwzY&list=PLNYkxOF6rcIDdS7HWIC_BYRunV6MHs5xo&index=10">
-    <img src="https://img.youtube.com/vi/HgJ0XCyBwzY/0.jpg" alt="Polymer Starter Kit 2 video">
+  <a href="https://hn-polymer-2.firebaseapp.com" rel="noopener" target="_blank">
+    <img alt="Demo Screenshot" src="hn-polymer.png">
+  <br>
+  Try the Demo!
   </a>
 </p>
 
-### Setup
+# Performance
+- Lighthouse [92/100](https://www.webpagetest.org/lighthouse.php?test=170516_F6_82399308fdbe29d39cd297ee0960a062&run=3)
+- Interactive (Emerging Markets) [2.7s](https://www.webpagetest.org/result/170516_F6_82399308fdbe29d39cd297ee0960a062/)
+- Interactive (Faster 3G) [2.0s](https://www.webpagetest.org/result/170516_WW_6bbab2960100313ae75052346ca7efad/)
 
-##### Prerequisites
+# Features
+## Progressive Web App
+- Uses Service Worker to cache data and work offline
+- App Manifest for installing to homescreen
 
-First, install [Polymer CLI](https://github.com/Polymer/polymer-cli) using
-[npm](https://www.npmjs.com) (we assume you have pre-installed [node.js](https://nodejs.org)).
+## Polymer CLI
+hn-polymer-2 was created by using the [Polymer CLI](https://www.polymer-project.org/2.0/docs/tools/polymer-cli), a collection of tools to make building Web Components and Polymer apps easier.
 
+Using [Polymer Starter Kit](https://github.com/PolymerElements/polymer-starter-kit) template provided by the CLI made following the PRPL pattern easy from the start.
+## PRPL pattern
+The PRPL pattern, in a nutshell:
+
+- **Push** components required for the initial route using http2 and Server Push
+- **Render** initial route ASAP
+- **Pre-cache** components for remaining routes using Service Worker
+- **Lazy-load** and progressively upgrade next routes on-demand
+
+## Firebase
+[Firebase](https://firebase.google.com/docs/hosting/) provides easy http2-enabled static hosting, a real-time database, server [functions](https://firebase.google.com/docs/functions/), and edge-caching all over the globe.
+
+# Setup
+1. Install polymer-cli globally
+    ```
     npm install -g polymer-cli
+    ```
 
-##### Initialize project from template
-
-    mkdir my-app
-    cd my-app
-    polymer init starter-kit
-
-### Start the development server
-
-This command serves the app at `http://localhost:8080` and provides basic URL
-routing for the app:
-
-    polymer serve --open
-
-### Build
-
-This command performs HTML, CSS, and JS minification on the application
-dependencies, and generates a service-worker.js file with code to pre-cache the
-dependencies based on the entrypoint and fragments specified in `polymer.json`.
-The minified files are output to the `build/unbundled` folder, and are suitable
-for serving from a HTTP/2+Push compatible server.
-
-In addition the command also creates a fallback `build/bundled` folder,
-generated using fragment bundling, suitable for serving from non
-H2/push-compatible servers or to clients that do not support H2/Push.
-
+1. Install the dependencies
+    ```
+    npm install
+    ```
+1. Serve the development version
+    ```
+    polymer serve
+    ```
+1. (Optional) Enable firebase function based HN API proxy
+    - Edit `sw-precache-config.js`
+    - Edit `src/hn-app.html`
+1. Build
+    ```
     polymer build
+    ```
+1. Test deployment
+    ```
+    polymer serve build/es5-bundled
+    ```
+1. Deploy after setting up a firebase project
+    ```
+    firebase deploy
+    ```
 
-### Preview the build
+# TODOs
+- use firebase functions to differentially serve for polyfills
+- use firebase functions to push route data for all pages, not just main routes
+- use official HackerNews Firebase API to support realtime updates
+- Automate using firebase function API proxy when deploying
 
-This command serves the minified version of the app at `http://localhost:8080`
-in an unbundled state, as it would be served by a push-compatible server:
-
-    polymer serve build/unbundled
-
-This command serves the minified version of the app at `http://localhost:8080`
-generated using fragment bundling:
-
-    polymer serve build/bundled
-
-### Run tests
-
-This command will run [Web Component Tester](https://github.com/Polymer/web-component-tester)
-against the browsers currently installed on your machine:
-
-    polymer test
-
-### Adding a new view
-
-You can extend the app by adding more views that will be demand-loaded
-e.g. based on the route, or to progressively render non-critical sections of the
-application. Each new demand-loaded fragment should be added to the list of
-`fragments` in the included `polymer.json` file. This will ensure those
-components and their dependencies are added to the list of pre-cached components
-and will be included in the `bundled` build.
+# License
+BSD-3-Clause

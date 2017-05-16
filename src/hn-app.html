@@ -8,8 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymer/lib/utils/import-href.html">
+<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
+<link rel="import" href="../node_modules/@polymer/polymer/lib/utils/import-href.html">
 <link rel="import" href="simple-router.html">
 <script src="fetch.js"></script>
 
@@ -81,8 +81,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // base fetch url
     // url for server proxy to api, when running locally switch url's
-    const fetchBaseUrl = '/hn';
-    // const fetchBaseUrl = 'https://node-hnapi.herokuapp.com';
+    // const fetchBaseUrl = '/hn';
+    const fetchBaseUrl = 'https://node-hnapi.herokuapp.com';
 
     // custom list-type for route page
     const pageToListType = {

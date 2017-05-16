@@ -9,8 +9,8 @@
  */
 
 /* eslint-env node */
-const path = '/hn';
-// const path = 'https://node-hnapi.herokuapp.com';
+// const path = '/hn';
+const path = 'https://node-hnapi.herokuapp.com';
 
 module.exports = {
   staticFileGlobs: [

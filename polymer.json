@@ -11,11 +11,11 @@
   "sources": [
     "src/**/*",
     "images/**/*",
-    "bower.json"
+    "package.json"
   ],
   "extraDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/*.js"
+    "node_modules/@webcomponents/webcomponentsjs/*.js"
   ],
   "lint": {
     "rules": ["polymer-2"]
