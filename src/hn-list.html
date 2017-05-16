@@ -33,11 +33,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       li {
-        padding-top: 8px;
+        display: flex;
+        padding: 8px 0;
+        border-bottom: var(--separator-border);
       }
 
       .title > a {
         text-decoration: none;
+      }
+
+      .index {
+        padding-right: 1rem;
+        font-weight: bold;
+        color: var(--detail-font-color);
+        align-self: center;
       }
 
       .info, .domain {
@@ -50,8 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .info {
         font-size: var(--detail-font-size);
-        padding: 8px 0 16px 0;
-        border-bottom: var(--separator-border);
+        padding-top: 8px;
       }
 
       .info > a {
@@ -59,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .spacer {
-        padding: 0 .5em;
+        padding-right: .5em;
       }
 
       .forwardback {
@@ -79,16 +87,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <ul>
       <template is="dom-repeat" items="[[list]]" initial-count="10">
         <li>
+          <span class="index">[[_computeIndex(pageSize, page, index)]]</span>
           <div class="title">
             <a href="[[item.url]]">[[item.title]]</a>
             <span class="domain">([[item.domain]])</span>
-          </div>
-          <div class="info">
-            [[item.points]] points by
-            <a href="/user/[[item.user]]">[[item.user]]</a>
-            [[item.time_ago]]
-            <span class="spacer">|</span>
-            <a href="/item/[[item.id]]">[[item.comments_count]] comments</a>
+            <div class="info">
+              [[item.points]] points by
+              <a href="/user/[[item.user]]">[[item.user]]</a>
+              [[item.time_ago]]
+              <span class="spacer">|</span>
+              <a href="/item/[[item.id]]">[[item.comments_count]] comments</a>
+            </div>
           </div>
         </li>
       </template>
@@ -108,12 +117,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get is() { return 'hn-list'; }
 
+      static get properties() {
+        return {
+          pageSize: Number,
+        };
+      }
+
       _computeNextPage(page) {
         return parseInt(page || 1) + 1;
       }
 
       _computePrevPage(page) {
         return (parseInt(page || 2) - 1) || 1;
+      }
+
+      _computeIndex(pageSize, page, index) {
+        return pageSize * (page - 1) + index + 1;
       }
     }
 

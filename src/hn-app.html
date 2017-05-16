@@ -45,11 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <simple-router path="{{_path}}"></simple-router>
     <slot></slot>
     <div id="views">
+      <!-- page-size hardcoded to 30, but ideally would be provided by data source -->
       <hn-list
         class$="[[_viewClass('list', _view, _loading)]]"
         list="[[_listData]]"
         type="[[_listType]]"
-        page="[[_listPage]]">
+        page="[[_listPage]]"
+        page-size="30">
       </hn-list>
       <hn-item
         class$="[[_viewClass('item', _view, _loading)]]"
