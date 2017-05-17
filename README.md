@@ -5,7 +5,7 @@ Very basic Hacker News [Progressive Web App](https://developers.google.com/web/p
 
 <p align="center">
   <a href="https://hn-polymer-2.firebaseapp.com" rel="noopener" target="_blank">
-    <img alt="Demo Screenshot" src="hn-polymer.png">
+    <img alt="Demo Screenshot" src="hn-polymer.png" height="500">
   <br>
   Try the Demo!
   </a>
