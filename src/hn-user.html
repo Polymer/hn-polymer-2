@@ -25,6 +25,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .links {
         padding: 8px 0;
       }
+
+      .about {
+        overflow-wrap: break-word;
+      }
+
+      .about pre {
+        white-space: pre-line;
+      }
     </style>
     <table>
       <tr>
@@ -41,7 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </tr>
     </table>
 
-    <div hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
+    <div class="about" hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
     <div class="links">
       <a href$="[[_hnLink('submitted', user.id)]]">submissions</a>
       |
