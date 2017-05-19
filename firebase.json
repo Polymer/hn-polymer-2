@@ -17,23 +17,23 @@
     "headers": [
       {
         "source": "/item/*",
-        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-item.html>;rel=preload;as=document,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
+        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-item.html>;rel=preload;as=document,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
       },
       {
         "source": "/user/*",
-        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-user.html>;rel=preload;as=document,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
+        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-user.html>;rel=preload;as=document,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
       },
       {
         "source": "/",
-        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
+        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
       },
       {
         "source": "/top/**",
-        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
+        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
       },
       {
         "source": "/?(new|ask|show|jobs)/**",
-        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
+        "headers": [{"key": "Link", "value": "</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script"}]
       },
       {
         "source": "**/*.@(js|html|png|json|ico)",
