@@ -17,23 +17,23 @@
     "headers": [
       {
         "source": "/item/*",
-        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-item.html>;rel=preload;as=document"}]
+        "headers": [{"key": "Link", "value": "</node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-item.html>;rel=preload;as=document"}]
       },
       {
         "source": "/user/*",
-        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-user.html>;rel=preload;as=document"}]
+        "headers": [{"key": "Link", "value": "</node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-user.html>;rel=preload;as=document"}]
       },
       {
         "source": "/",
-        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
+        "headers": [{"key": "Link", "value": "</node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
       },
       {
         "source": "/top/**",
-        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
+        "headers": [{"key": "Link", "value": "</node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document,</hn/news?page=1>;rel=preload"}]
       },
       {
         "source": "/?(new|ask|show|jobs)/**",
-        "headers": [{"key": "Link", "value": "</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document"}]
+        "headers": [{"key": "Link", "value": "</node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/hn-app.html>;rel=preload;as=document,</src/hn-list.html>;rel=preload;as=document"}]
       },
       {
         "source": "**/*.@(js|html|png|json|ico)",

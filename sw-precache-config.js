@@ -16,8 +16,8 @@ module.exports = {
   staticFileGlobs: [
     '/index.html',
     '/manifest.json',
-    '/bower_components/webcomponentsjs/webcomponents*.js',
-    '/bower_components/webcomponentsjs/custom-elements-es5-adapter.js'
+    '/node_modules/@webcomponents/webcomponentsjs/webcomponents*.js',
+    '/node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js'
   ],
   runtimeCaching: [
     {
