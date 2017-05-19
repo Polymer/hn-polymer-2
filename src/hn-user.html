@@ -7,9 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-
+<link rel="import" href="hn-stamp-mixin.html">
 <dom-module id="hn-user">
   <template strip-whitespace>
     <style>
@@ -37,42 +35,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <table>
       <tr>
         <td>User:</td>
-        <td>[[user.id]]</td>
+        <td id="id"></td>
       </tr>
       <tr>
         <td>Created:</td>
-        <td>[[user.created]]</td>
+        <td id="created"></td>
       </tr>
       <tr>
         <td>Karma:</td>
-        <td>[[user.karma]]</td>
+        <td id="karma"></td>
       </tr>
     </table>
-
-    <div class="about" hidden$="[[!user.about]]" inner-h-t-m-l="[[user.about]]"></div>
+    <div id="about" class="about"></div>
     <div class="links">
-      <a href$="[[_hnLink('submitted', user.id)]]">submissions</a>
+      <a id="submissions">submissions</a>
       |
-      <a href$="[[_hnLink('threads', user.id)]]">comments</a>
+      <a id="threads">comments</a>
       |
-      <a href$="[[ _hnLink('favorites', user.id)]]">favorites</a>
+      <a id="favorites">favorites</a>
     </div>
   </template>
 
   <script>
   (function() {
+    let ELEMENT_NAME = 'hn-user';
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
-    class HnUser extends Polymer.Element {
+    class HnUser extends Hn.stampMixin(HTMLElement) {
 
-      static get is() { return 'hn-user'; }
+      get _template() { return template; }
+
+      _render() {
+        if (!this.user) {
+          return;
+        }
+        this.$.id.textContent = this.user.id;
+        this.$.created.textContent = this.user.created;
+        this.$.karma.textContent = this.user.karma;
+        this.$.about.innerHTML = this.user.about ? this.user.about : '';
+        this.$.submissions.href = this._hnLink('submitted', this.user.id);
+        this.$.threads.href = this._hnLink('threads', this.user.id);
+        this.$.favorites.href = this._hnLink('favorites', this.user.id);
+      }
 
       _hnLink(type, id) {
         return `https://news.ycombinator.com/${type}?id=${id}`;
       }
     }
 
-    window.customElements.define(HnUser.is, HnUser);
+    HnUser.createProperties(['user']);
 
+    window.customElements.define('hn-user', HnUser);
   })();
   </script>
 </dom-module>

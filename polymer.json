@@ -21,15 +21,8 @@
     "rules": ["polymer-2"]
   },
   "builds": [{
-    "name": "es5-bundled",
+    "name": "es6-bundled",
     "bundle": true,
-    "js": {"minify": true, "compile": true},
-    "css": {"minify": true},
-    "html": {"minify": true},
-    "addServiceWorker": true,
-    "addPushManifest": true
-  },{
-    "name": "es6-unbundled",
     "js": {"minify": true},
     "css": {"minify": true},
     "html": {"minify": true},

@@ -7,9 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-
+<link rel="import" href="hn-stamp-mixin.html">
 <dom-module id="hn-comment">
   <template strip-whitespace>
     <style>
@@ -58,23 +56,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div class="header">
-      <button class="toggle" on-click="_toggleCollapse" aria-label$="[[_collapseTitle]]">[[_collapseString]]</button>
-      <a href$="/user/[[comment.user]]">[[comment.user]]</a>
-      <a href$="/item/[[comment.id]]">[[comment.time_ago]]</a>
+      <button id="toggle" class="toggle"></button>
+      <a id="user"></a>
+      <a id="time"></a>
     </div>
-    <div class="comment" inner-h-t-m-l="[[comment.content]]" hidden$="[[collapsed]]"></div>
-    <div class="comments" hidden$="[[collapsed]]">
-      <template is="dom-repeat" items="[[comment.comments]]" initial-count="3">
-        <hn-comment comment="[[item]]"></hn-comment>
-      </template>
-    </div>
+    <div id="comment" class="comment"></div>
+    <div id="comments" class="comments"></div>
   </template>
+  <template id="hn-comment-item"><hn-comment></hn-comment></template>
   <script>
   (function() {
+    let ELEMENT_NAME = 'hn-comment';
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
-    class HnComment extends Polymer.Element {
+    let itemTemplate = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > #${ELEMENT_NAME}-item`);
 
-      static get is() { return 'hn-comment'; }
+    class HnComment extends Hn.stampMixin(HTMLElement) {
+
+      get _template() {
+        return template;
+      }
 
       constructor() {
         super();
@@ -82,6 +85,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._collapseString = '[–]';
         this._collapseTitle = 'Hide comments';
         this._commentThreadSize = 0;
+      }
+
+      _ready() {
+        super._ready();
+        this.$.toggle.addEventListener('click', (e) => this._toggleCollapse(e));
+      }
+
+      _render() {
+        if (!this.comment) {
+          return;
+        }
+        this.collapsed = false;
+        this._renderCollapsed();
+        this.$.user.href = `/user/${this.comment.user}`;
+        this.$.user.textContent = this.comment.user;
+        this.$.time.href = `/item/${this.comment.id}`;
+        this.$.time.textContent = this.comment.time_ago;
+        this.$.comment.innerHTML = this.comment.content || '';
+        this._renderList(this.$.comments, this.comment.comments, itemTemplate,
+          ($, data, index, item) => item.comment = data
+        );
+      }
+
+      _renderCollapsed() {
+        if (!this._commentThreadSize) {
+          this._commentThreadSize = this._calculateThreadSize(this.comment);
+        }
+        this._collapseString = this.collapsed ? `[+${this._commentThreadSize}]` : '[–]';
+        this._collapseTitle = `${this.collapsed ? 'Show' : 'Hide'} ${this._commentThreadSize} comments`;
+        this.$.toggle.setAttribute('aria-label', this._collapseTitle);
+        this.$.toggle.textContent = this._collapseString;
+        this.$.comment.hidden = this.collapsed;
+        this.$.comments.hidden = this.collapsed;
       }
 
       _calculateThreadSize(comment) {
@@ -96,16 +132,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _toggleCollapse() {
         this.collapsed = !this.collapsed;
-        if (!this._commentThreadSize) {
-          this._commentThreadSize = this._calculateThreadSize(this.comment);
-        }
-        this._collapseString = this.collapsed ? `[+${this._commentThreadSize}]` : '[–]';
-        this._collapseTitle = `${this.collapsed ? 'Show' : 'Hide'} ${this._commentThreadSize} comments`;
+        this._renderCollapsed();
       }
 
     }
 
-    customElements.define(HnComment.is, HnComment);
+    HnComment.createProperties(['comment']);
+
+    customElements.define('hn-comment', HnComment);
 
   })();
   </script>

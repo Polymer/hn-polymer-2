@@ -8,8 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-<link rel="import" href="../node_modules/@polymer/polymer/lib/utils/import-href.html">
+<link rel="import" href="hn-stamp-mixin.html">
 <link rel="import" href="simple-router.html">
 <script src="fetch.js"></script>
 
@@ -42,35 +41,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <simple-router path="{{_path}}"></simple-router>
+    <simple-router id="router"></simple-router>
     <slot></slot>
     <div id="views">
       <!-- page-size hardcoded to 30, but ideally would be provided by data source -->
-      <hn-list
-        class$="[[_viewClass('list', _view, _loading)]]"
-        list="[[_listData]]"
-        type="[[_listType]]"
-        page="[[_listPage]]"
-        page-size="30">
+      <hn-list id="list" page-size="30">
       </hn-list>
-      <hn-item
-        class$="[[_viewClass('item', _view, _loading)]]"
-        item="[[_itemData]]">
-      </hn-item>
-      <hn-user
-        class$="[[_viewClass('user', _view, _loading)]]"
-        user="[[_userData]]">
-      </hn-user>
-      <hn-404
-        class$="[[_viewClass('404', _view, _loading)]]">
-      </hn-404>
-      <hn-offline
-        class$="[[_viewClass('offline', _view, _loading)]]"
-        on-refresh="_refreshRoute">
+      <hn-item id="item"></hn-item>
+      <hn-user id="user"></hn-user>
+      <hn-404 id="404"></hn-404>
+      <hn-offline id="offline">
       </hn-offline>
     </div>
 
-    <div class="loading" hidden$="[[!_loading]]">
+    <div id="loading" class="loading">
       <slot name="load"></slot>
     </div>
 
@@ -78,6 +62,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   (function() {
+    let ELEMENT_NAME = 'hn-app';
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
     // base fetch url
     // url for server proxy to api, when running locally switch url's
@@ -87,22 +74,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // custom list-type for route page
     const pageToListType = {
       top: 'news',
-      new: 'newest'
-    }
+      new: 'newest',
+    };
 
-    class HnApp extends Polymer.Element {
+    class HnApp extends Hn.stampMixin(HTMLElement) {
 
-      static get is() { return 'hn-app'; }
+      get _template() { return template; }
 
-      static get observers() {
-        return [
-          '_routeChanged(_path)',
-          '_fetchList(_listPath, _listPage)',
-          '_fetchItem(_itemId)',
-          '_fetchUser(_userName)',
-          '_viewChanged(_view)',
-          '_selectedClass(_view, _listType)'
-        ];
+      _attachDom(dom) {
+        dom.$.router.addEventListener('path-changed', (e) =>
+          this._routeChanged(e.detail.value)
+        );
+        dom.$.offline.addEventListener('refresh', (e) => this._refreshRoute());
+        super._attachDom(dom);
       }
 
       _routeChanged(path) {
@@ -125,6 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (detail) {
               props._view = 'user';
               pending._userName = props._userName = detail;
+              this._fetchUser(props._userName);
             } else {
               props._view = '404';
             }
@@ -135,8 +120,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case 'show':
           case 'jobs':
             props._view = 'list';
-            props._listType = page;
-            pending._listPage = props._listPage = detail || 1;
+            this.$.list.type = props._listType = page;
+            this.$.list.page = pending._listPage = props._listPage = detail || 1;
             props._listPath = pageToListType[page] || page;
             break;
           default:
@@ -144,14 +129,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             break;
         }
         pending._view = props._view;
-        this.setProperties(props);
+        Object.assign(this, props);
+        this._fetchViewData(props._view);
       }
 
       // called when coming back online...
       _refreshRoute() {
         // refresh pending route path if in offline state.
         if (this._view == 'offline' && this._pendingFetch) {
-          this.setProperties(this._pendingFetch);
+          let view = this._pendingFetch._view;
+          if (view) {
+            Object.assign(this, this._pendingFetch);
+            this._fetchViewData(view);
+          }
+        }
+      }
+
+      _fetchViewData(view) {
+        switch(view) {
+          case 'item':
+            this._fetchItem(this._itemId);
+            break;
+          case 'list':
+            this._fetchList(this._listPath, this._listPage);
+            break;
+          case 'user':
+            this._fetchUser(this._userName);
+            break;
         }
       }
 
@@ -162,21 +166,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             url += `?page=${page}`;
           }
           this._fetch(url)
-            .then(data => this._listData = data, () => this._listPage = null);
+            .then((data) => this.$.list.list = data, () => this._listPage = null);
         }
       }
 
       _fetchItem(id) {
         if (id) {
           this._fetch(`${fetchBaseUrl}/item/${id}`)
-            .then(data => this._itemData = data, (e) => this._itemId = null);
+            .then((data) => this.$.item.item = data, (e) => this._itemId = null);
         }
       }
 
       _fetchUser(user) {
         if (user) {
           this._fetch(`${fetchBaseUrl}/user/${user}`)
-            .then(data => this._userData = data, () => this._userName = null);
+            .then((data) => this.$.user.user = data, () => this._userName = null);
         }
       }
 
@@ -184,13 +188,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // scroll to top when fetching
         document.body.scrollTop = 0;
         this._loading = true;
-        return fetch(url).then(response => {
-          return response.json().then(data => {
+        return fetch(url).then((response) => {
+          return response.json().then((data) => {
             this._pendingFetch = null;
             this._loading = false;
             return data;
           });
-        }, reject => {
+        }, (reject) => {
           if (!navigator.onLine) {
             this._view = 'offline';
           }
@@ -199,33 +203,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
-      _viewChanged(view) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('hn-' + view + '.html');
-        Polymer.importHref(resolvedPageUrl, null, ()=>this._view='404', true);
+      _render() {
+        this._ensureViewLoaded(this._view);
+        this._updateSelectedView(this._view, this._loading);
+        this._updateSelectedViewClass(this._view, this._listType);
       }
 
-      _viewClass(name, view, loading) {
-        return name == view && !loading ? 'selectedView' : '';
+      // Load page import on demand. Show 404 page if fails
+      _ensureViewLoaded(view) {
+        let name = `hn-${view}`;
+        if (!customElements.get(name)) {
+          let link = document.createElement('link');
+          link.rel = 'import';
+          link.href = `/src/${name}.html`;
+          link.addEventListener('error', (e) => this._view='404');
+          document.head.appendChild(link);
+        }
+      }
+
+      _updateSelectedView(view, loading) {
+        const sel = 'selectedView';
+        if (this._selectedView) {
+          this._selectedView.classList.remove(sel);
+        }
+        if (!loading) {
+          this._selectedView = this.$[view];
+          if (this._selectedView) {
+            this._selectedView.classList.add(sel);
+          }
+        }
+        this.$.loading.hidden = !loading;
       }
 
       // indicate selected list/tab; here we throw a class on body
       // to be able to coordinate with the nav bar which is in body.
-      _selectedClass(view, page) {
+      _updateSelectedViewClass(view, page) {
         let root = document.body;
-        if (this._prevSelectedClass) {
-          root.classList.remove(this._prevSelectedClass);
+        if (this._selectedViewClass) {
+          root.classList.remove(this._selectedViewClass);
         }
         if (view == 'list') {
-          this._prevSelectedClass = `hn-${page}`;
-          root.classList.add(this._prevSelectedClass);
+          this._selectedViewClass = `hn-${page}`;
+          root.classList.add(this._selectedViewClass);
         }
       }
 
     }
 
-    window.customElements.define(HnApp.is, HnApp);
+    HnApp.createProperties(['_view', '_loading']);
 
+    window.customElements.define('hn-app', HnApp);
   })();
   </script>
 </dom-module>

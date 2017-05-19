@@ -7,11 +7,8 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-<link rel="import" href="../node_modules/@polymer/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="hn-stamp-mixin.html">
 <link rel="import" href="hn-comment.html">
-
 <dom-module id="hn-item">
   <template strip-whitespace>
     <style>
@@ -52,34 +49,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <a class="title" href$="[[item.url]]" hidden="[[item.content]]">[[item.title]]</a>
-    <div class="title" hidden="[[!item.content]]">[[item.title]]</div>
-    <span class="domain" hidden="[[!item.domain]]">([[item.domain]])</span>
-    <div hidden="[[!item.content]]" inner-h-t-m-l="[[item.content]]"></div>
+    <a id="title" class="title"></a>
+    <div id="titleContent" class="title"></div>
+    <span id="domain" class="domain"></span>
+    <div id="content"></div>
     <div class="meta">
-      [[item.points]] points by
-      <a class="user" href$="/user/[[item.user]]">[[item.user]]</a>
-      [[item.time_ago]]
+      <span id="points"></span> points by
+      <a id="user" class="user"></a>
+      <span id="time"></span>
       <span class="spacer">|</span>
-      <span>[[item.comments_count]] comments</span>
+      <span id="count"></span>
     </div>
-
-    <template is="dom-repeat" items="[[item.comments]]" initial-count="5">
-      <hn-comment comment=[[item]]></hn-comment>
-    </template>
+    <div id="comments"></div>
   </template>
+
+  <template id="hn-item-item"><hn-comment></hn-comment></template>
 
   <script>
   (function() {
+    let ELEMENT_NAME = 'hn-item';
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
-    class HnItem extends Polymer.Element {
+    let itemTemplate = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > #${ELEMENT_NAME}-item`);
 
-      static get is() { return 'hn-item'; }
+    class HnItem extends Hn.stampMixin(HTMLElement) {
+
+      get _template() { return template; }
+
+      _render() {
+        this.$.title.href = this.item.url;
+        this.$.title.textContent = this.item.title;
+        this.$.title.hidden = Boolean(this.item.content);
+        this.$.titleContent.textContent = this.item.title;
+        this.$.titleContent.hidden = !(this.item.content);
+        this.$.domain.textContent = `(${this.item.domain})`;
+        this.$.content.hidden = !(this.item.content);
+        this.$.content.innerHTML = this.item.content;
+        this.$.points.textContent = this.item.points;
+        this.$.user.href = `/user/${this.item.user}`;
+        this.$.user.textContent = this.item.user;
+        this.$.time.href = `/item/${this.item.id}`;
+        this.$.time.textContent = this.item.time_ago;
+        this.$.count.textContent = `${this.item.comments_count} comments`;
+        this._renderList(this.$.comments, this.item.comments, itemTemplate,
+          ($, data, index, item) => item.comment = data
+        );
+      }
 
     }
 
-    customElements.define(HnItem.is, HnItem);
+    HnItem.createProperties(['item']);
 
+    customElements.define('hn-item', HnItem);
   })();
   </script>
 </dom-module>

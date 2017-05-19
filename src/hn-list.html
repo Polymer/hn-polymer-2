@@ -7,10 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-<link rel="import" href="../node_modules/@polymer/polymer/lib/elements/dom-repeat.html">
-
+<link rel="import" href="hn-stamp-mixin.html">
 <dom-module id="hn-list">
   <template strip-whitespace>
     <style>
@@ -92,43 +89,69 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-align: center;
       }
     </style>
-    <ul>
-      <template is="dom-repeat" items="[[list]]" initial-count="10">
-        <li>
-          <span class="index">[[_computeIndex(pageSize, page, index)]]</span>
-          <div class="title">
-            <a href="[[item.url]]">[[item.title]]</a>
-            <span class="domain">([[item.domain]])</span>
-            <div class="info">
-              [[item.points]] points by
-              <a href="/user/[[item.user]]">[[item.user]]</a>
-              [[item.time_ago]]
-              <span class="spacer">|</span>
-              <a href="/item/[[item.id]]">[[item.comments_count]] comments</a>
-            </div>
-          </div>
-        </li>
-      </template>
-    </ul>
-
+    <ul id="list"></ul>
     <div class="forwardback">
-      <a class="prev" href="/[[type]]/[[_computePrevPage(page)]]" aria-label="Previous Page">◀ Previous</a>
-      <span>Page [[page]]</span>
-      <a class="next" href="/[[type]]/[[_computeNextPage(page)]]" aria-label="Next Page">Next ▶</a>
+      <a id="prev" aria-label="Previous Page">◀ Previous</a>
+      <span id="page"></span>
+      <a id="next"aria-label="Next Page">Next ▶</a>
     </div>
 
   </template>
+
+  <template id="hn-list-item"><li>
+    <span id="index" class="index"></span>
+    <div class="title">
+      <a id="title"></a>
+      <span id="info" class="domain"></span>
+      <div class="info">
+        <span id="points"></span>
+        <a id="user"></a>
+        <span id="time"></span>
+        <span class="spacer">|</span>
+        <a id="comments"></a>
+      </div>
+    </div>
+  </li></template>
   <script>
   (function() {
+    let ELEMENT_NAME = 'hn-list';
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
-    class HnList extends Polymer.Element {
+    let itemTemplate = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > #hn-list-item`);
 
-      static get is() { return 'hn-list'; }
+    class HnList extends window.Hn.stampMixin(HTMLElement) {
 
-      static get properties() {
-        return {
-          pageSize: Number,
-        };
+      get _template() {
+        return template;
+      }
+
+      _render() {
+        if (!this.list) {
+          return;
+        }
+        let prev = this._computePrevPage(this.page);
+        let next = this._computeNextPage(this.page);
+        this.$.prev.href = `/${this.type}/${prev}`;
+        this.$.page.textContent = `Page ${this.page}`;
+        this.$.next.href = `/${this.type}/${next}`;
+        let pageSize = parseInt(this.getAttribute('page-size'));
+        this._renderList(this.$.list, this.list, itemTemplate,
+          ($, data, index) => {
+            $.index.textContent =
+              this._computeIndex(pageSize, this.page, index);
+            $.title.href = data.url;
+            $.title.textContent = data.title;
+            $.info.textContent = `(${data.domain})`;
+            $.points.textContent = `${data.points} points by`;
+            $.user.href = `/user/${data.user}`;
+            $.user.textContent = `${data.user}`;
+            $.time.textContent = data.time_ago;
+            $.comments.href= `/item/${data.id}`;
+            $.comments.textContent = `${data.comments_count} comments`;
+          }
+        );
       }
 
       _computeNextPage(page) {
@@ -144,8 +167,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     }
 
-    window.customElements.define(HnList.is, HnList);
+    HnList.createProperties(['type', 'page', 'list']);
 
+    window.customElements.define('hn-list', HnList);
   })();
   </script>
 </dom-module>

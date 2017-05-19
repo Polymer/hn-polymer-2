@@ -7,9 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-
+<link rel="import" href="hn-stamp-mixin.html">
 <dom-module id="hn-404">
   <template>
     <style>
@@ -37,14 +35,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
   (function() {
+    let ELEMENT_NAME = 'hn-404'
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
-    class Hn404 extends Polymer.Element {
-
-      static get is() { return 'hn-404'; }
+    class Hn404 extends HTMLElement {
+      get _template() {
+        return template;
+      }
     }
 
-    window.customElements.define(Hn404.is, Hn404);
-
+    window.customElements.define('hn-404', Hn404);
   })();
   </script>
 </dom-module>

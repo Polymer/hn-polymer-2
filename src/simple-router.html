@@ -7,22 +7,15 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-
 <script>
 (function() {
-  class SimpleRouter extends Polymer.Element {
-
-    static get properties() { return {
-      path: { notify: true, computed: '_computePath(location)' }
-    }};
+  class SimpleRouter extends HTMLElement {
 
     constructor() {
       super();
-      document.body.addEventListener('click', e=>this._handleClick(e));
+      document.body.addEventListener('click', (e)=>this._handleClick(e));
       window.addEventListener('popstate', ()=>this._handleUrlChange());
-      this._handleUrlChange()
+      this._handleUrlChange();
     }
 
     _handleClick(e) {
@@ -36,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       } else {
         origin = window.location.protocol + '//' + window.location.host;
       }
-      let anchor = e.composedPath().filter(n=>n.localName=='a')[0];
+      let anchor = e.composedPath().filter((n)=>n.localName=='a')[0];
       if (anchor && anchor.href.indexOf(origin) === 0) {
         e.preventDefault();
         window.history.pushState({}, '', anchor.href);
@@ -46,10 +39,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _handleUrlChange() {
       this.location = window.location.href;
-    }
-
-    _computePath(location) {
-      return window.decodeURIComponent(window.location.pathname).slice(1).split('/');
+      this.path = window.decodeURIComponent(window.location.pathname)
+        .slice(1).split('/');
+      window.Promise.resolve().then(() => {
+        this.dispatchEvent(
+          new CustomEvent('path-changed', {detail: {value: this.path}}));
+      });
     }
 
   }

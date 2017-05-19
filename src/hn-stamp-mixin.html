@@ -1,0 +1,153 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<script>
+(function() {
+  /**
+   * @polymerMixin
+   */
+  function stampMixin(Base) {
+    return class Hn extends Base {
+
+      static createProperties(props) {
+        let proto = this.prototype;
+        proto.__properties = props;
+        for (let i=0; i < props.length; i++) {
+          this.createProperty(props[i]);
+        }
+      }
+
+      // not allowed with CSP
+      static createProperty(prop) {
+        let proto = this.prototype;
+        Object.defineProperty(proto, prop, {
+          get: new Function(`return this.__data.${prop};`),
+          set: new Function('v', `
+            const o = this.__data.${prop};
+            if (v != o) {
+              this.__data.${prop} = v;
+              this._queueRender();
+            }`
+          ),
+          configurable: true,
+        });
+      }
+
+      // static createProperty(prop) {
+      //   let proto = this.prototype;
+      //   Object.defineProperty(proto, prop, {
+      //     get() {
+      //       return this.__data[prop];
+      //     },
+      //     set(v) {
+      //       const o = this.__data[prop];
+      //       if (v != o) {
+      //         this.__data[prop] = v;
+      //         this._queueRender();
+      //       }
+      //     },
+      //     configurable: true,
+      //   });
+      // }
+
+      constructor() {
+        super();
+        this.__data = this.__properties ? {} : null;
+      }
+
+      connectedCallback() {
+        if (!this._readied) {
+          this._readied = true;
+          this._ready();
+        }
+      }
+
+      _ready() {
+        if (this.__properties) {
+          let props = this.__properties;
+          for (let i=0; i < props.length; i++) {
+            let p = props[i];
+            if (this.hasOwnProperty(p)) {
+              let v = this[p];
+              delete this[p];
+              this[p] = v;
+            }
+          }
+        }
+        if (!this._template) {
+          return;
+        }
+        let dom = this._stampTemplate(this._template);
+        this.$ = dom.$;
+        this._attachDom(dom);
+      }
+
+      _attachDom(dom) {
+        this.attachShadow({mode: 'open'});
+        this.shadowRoot.appendChild(dom);
+      }
+
+      _stampTemplate(template) {
+        let dom = document.importNode(template.content, true);
+        let nodes = dom.querySelectorAll('[id]');
+        dom.$ = {};
+        for (let i=0; i < nodes.length; i++) {
+          let n = nodes[i];
+          dom.$[n.getAttribute('id')] = n;
+        }
+        return dom;
+      }
+
+      _queueRender() {
+        if (this._renderPending) {
+          return;
+        }
+        this._renderPending = true;
+        window.Promise.resolve().then(() => {
+          this._renderPending = false;
+          if (this._readied) {
+            this._render();
+          } else {
+            this._queueRender();
+          }
+        });
+      }
+
+      _render() {}
+
+      _renderList(container, list, itemTemplate, itemCallback) {
+        let c$ = container.children;
+        let item = container.firstChild;
+        for (let i=0; i < list.length; i++) {
+          item = c$[i];
+          if (!item) {
+            let dom = this._stampTemplate(itemTemplate);
+            item = dom.firstChild;
+            item.$ = dom.$;
+            container.appendChild(item);
+          }
+          itemCallback(item.$, list[i], i, item);
+        }
+        if (item) {
+          while (item.nextSibling) {
+            container.removeChild(item.nextSibling);
+          }
+          if (!list.length) {
+            container.removeChild(item);
+          }
+        }
+      }
+
+    };
+  }
+
+  window.Hn = window.Hn || {};
+  window.Hn.stampMixin = stampMixin;
+})();
+</script>

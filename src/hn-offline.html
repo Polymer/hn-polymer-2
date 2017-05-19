@@ -7,9 +7,7 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
-<link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
-
+<link rel="import" href="hn-stamp-mixin.html">
 <dom-module id="hn-offline">
   <template>
     <style>
@@ -31,23 +29,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div>Yo, you are offline and this resource is unavailable.</div>
-    <button on-click="_requestRefresh">Try Again...</button>
+    <button id="refresh">Try Again...</button>
   </template>
 
   <script>
-    class HnOffline extends Polymer.Element {
-      static get is() { return 'hn-offline'; }
+  (function() {
+    let ELEMENT_NAME = 'hn-offline';
+    let template = document.currentScript.ownerDocument
+      .querySelector(`dom-module[id=${ELEMENT_NAME}] > template`);
 
-      constructor() {
-        super();
+    class HnOffline extends Hn.stampMixin(HTMLElement) {
+      get _template() {
+        return template;
+      }
+
+      _ready() {
+        super._ready();
         window.addEventListener('online', (e) => this._requestRefresh());
+        this.$.refresh.addEventListener('click', () => this._requestRefresh);
       }
 
       _requestRefresh() {
-        this.dispatchEvent(new Event('refresh'))
+        this.dispatchEvent(new Event('refresh'));
       }
     }
 
-    window.customElements.define(HnOffline.is, HnOffline);
+    window.customElements.define('hn-offline', HnOffline);
+  })();
   </script>
 </dom-module>
