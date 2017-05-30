@@ -22,7 +22,7 @@ module.exports = {
   runtimeCaching: [
     {
       urlPattern: new RegExp(`${path}/(news|newest|ask|show|jobs)`),
-      handler: 'fastest',
+      handler: 'networkFirst',
       options: {
         cache: {
           maxEntries: 30,
@@ -31,7 +31,7 @@ module.exports = {
       }
     }, {
       urlPattern: new RegExp(`${path}/item/`),
-      handler: 'fastest',
+      handler: 'networkFirst',
       options: {
         cache: {
           maxEntries: 30,
@@ -40,7 +40,7 @@ module.exports = {
       }
     }, {
       urlPattern: new RegExp(`${path}/user/`),
-      handler: 'fastest',
+      handler: 'networkFirst',
       options: {
         cache: {
           maxEntries: 30,

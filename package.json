@@ -9,7 +9,7 @@
     "eslint": "^3.12.0",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-html": "^2.0.1",
-    "lighthouse": "^2.0.0-alpha.4",
+    "lighthouse": "^2.0.0",
     "polymer-cli": "^1.0.0"
   },
   "scripts": {
