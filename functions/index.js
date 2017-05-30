@@ -12,7 +12,7 @@ exports.hn = functions.https.onRequest((request, response) => {
   let url = `https://node-hnapi.herokuapp.com/${path}${query}`;
   fetch(url).then(resp => {
     resp.json().then(json => {
-      response.set('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=6000');
+      response.set('Cache-Control', 'public, max-age=300, s-maxage=300');
       response.send(json);
     });
   });
