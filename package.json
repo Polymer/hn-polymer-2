@@ -9,6 +9,7 @@
     "eslint": "^3.12.0",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-html": "^2.0.1",
+    "firebase-tools": "^3.9.0",
     "lighthouse": "^2.0.0",
     "polymer-cli": "^1.0.0"
   },
