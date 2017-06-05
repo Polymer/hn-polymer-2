@@ -3,10 +3,6 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /bower_components
-  static_dir: build/es5-bundled/bower_components
-  secure: always
-
 - url: /images
   static_dir: build/es5-bundled/images
   secure: always
