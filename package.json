@@ -2,19 +2,22 @@
   "name": "@polymer/hn-polymer-2",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@polymer/polymer": "^2.0.0",
-    "@webcomponents/webcomponentsjs": "^1.0.0"
+    "@polymer/polymer": "^2.0.2",
+    "@webcomponents/webcomponentsjs": "^1.0.7"
   },
   "devDependencies": {
     "eslint": "^3.12.0",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-html": "^2.0.1",
-    "firebase-tools": "^3.9.0",
-    "lighthouse": "^2.0.0",
-    "polymer-cli": "^1.0.0"
+    "firebase-tools": "^3.9.2",
+    "lighthouse": "^2.3.0",
+    "polymer-cli": "^1.4.1"
   },
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "npm run lint && polymer test"
+    "test": "npm run lint && polymer test",
+    "serve:dev": "polymer serve",
+    "serve:prod": "polymer build && firebase serve --only functions,hosting",
+    "deploy": "polymer build && firebase deploy"
   }
 }
