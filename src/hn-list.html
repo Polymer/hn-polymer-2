@@ -97,8 +97,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <li>
           <span class="index">[[_computeIndex(pageSize, page, index)]]</span>
           <div class="title">
-            <a href="[[item.url]]">[[item.title]]</a>
-            <span class="domain">([[item.domain]])</span>
+            <a href="[[_computeUrl(item)]]">[[item.title]]</a>
+            <span class="domain">([[_computeDomain(item)]])</span>
             <div class="info">
               [[item.points]] points by
               <a href="/user/[[item.user]]">[[item.user]]</a>
@@ -141,6 +141,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _computeIndex(pageSize, page, index) {
         return pageSize * (page - 1) + index + 1;
+      }
+
+      _computeDomain(item) {
+        return item.domain ? item.domain : 'news.ycombinator.com';
+      }
+
+      _computeUrl(item) {
+          return (item.type === 'ask' && !item.domain) ? `https://news.ycombinator.com/${item.url}` : item.url;
       }
     }
 
